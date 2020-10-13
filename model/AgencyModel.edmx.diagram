@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ec60dd3681d94e8eb6d235901a938998" Name="Diagram1">
+        <EntityTypeShape EntityType="AgencyModel.ContractorsMedia" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.ContractorsProduction" Width="1.5" PointX="5.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Employees" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Groups" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Leads" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.OrdReqs" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Positions" Width="1.5" PointX="8" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Stock" Width="1.5" PointX="5.25" PointY="11.75" IsExpanded="true" />
+        <AssociationConnector Association="AgencyModel.FK__Contractors__lid__7B5B524B" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Contracto__ordid__7C4F7684" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Positions__uid__01142BA1" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Groups__lid__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__OrdReqs__lid__7A672E12" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Stock__ordid__7D439ABD" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
