@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Controls;
 
 namespace Ais.src
 {
@@ -75,6 +77,27 @@ namespace Ais.src
                 sb.Append((namesOnly ? p.Name : p.GetValue(item)) + (delim + ""));
 
             return (sb + "").Trim(delim).Insert((sb + "").Length - 1, endBreak ? "\n" : "");
+        }
+
+        internal static void SortDataGrid(DataGrid d, int colIdx = 0) {
+            DataGridColumn colDst = d.Columns[colIdx];
+
+            d.Items.SortDescriptions.Clear();
+            d.Items.SortDescriptions.Add(new SortDescription(colDst.SortMemberPath,
+                ListSortDirection.Ascending));
+
+            foreach (DataGridColumn col in d.Columns)
+                col.SortDirection = null;
+
+            colDst.SortDirection = ListSortDirection.Ascending;
+            d.Items.Refresh();
+        }
+
+        internal static void SetComboBoxItem(ComboBox cmb, long id) {
+            foreach (string item in cmb.Items) {
+                if (item[1] == id)
+                    cmb.Text = item;
+            }
         }
 
         static List<PropertyInfo> ProjectLowerOnly<T>(T item) {

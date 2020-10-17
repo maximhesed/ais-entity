@@ -1,0 +1,29 @@
+﻿<Window x:Class="Ais.src.winStockRowManipulator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ais.src"
+        mc:Ignorable="d"
+        Title="winStockRowManipulator" Height="150" Width="680">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height='40' />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width='2*' />
+            <ColumnDefinition Width='7*' />
+        </Grid.ColumnDefinitions>
+
+        <Label Content='Order request: ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
+        <ComboBox Name='cmbOrdReqs' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Label Content='Date of receiving: ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
+        <DatePicker Name='dtpRecDate' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Button Name='btnDone' FontSize='15' Grid.Row='2' Grid.ColumnSpan='2' Click='btnDone_Click' />
+    </Grid>
+</Window>

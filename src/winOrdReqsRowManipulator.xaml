@@ -1,0 +1,41 @@
+﻿<Window x:Class="Ais.src.winOrdReqsRowManipulator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ais.src"
+        mc:Ignorable="d"
+        Title="winOrdReqsRowManipulator" Height="250" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height='40' />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width='*' />
+            <ColumnDefinition Width='2*' />
+        </Grid.ColumnDefinitions>
+
+        <Label Content='Product name: ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
+        <TextBox Name='txtProdName' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Label Content='Product quantity: ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
+        <TextBox Name='txtProdQuantity' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Label Content='Period date: ' FontSize='15' VerticalAlignment='Center' Grid.Row='2' Margin='10 5 10 0' />
+        <DatePicker Name='dtpPeriodDate' FontSize='15' VerticalAlignment='Center' Grid.Row='2' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Label Content='Producer: ' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Margin='10 5 10 0' />
+        <ComboBox Name='cmbProducers' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Label Content='Lead: ' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Margin='10 5 10 0' />
+        <ComboBox Name='cmbLeads' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Grid.Column='1' Margin='10 5 10 0' />
+
+        <Button Name='btnDone' FontSize='15' Grid.Row='5' Grid.ColumnSpan='2' Click='btnDone_Click' />
+    </Grid>
+</Window>

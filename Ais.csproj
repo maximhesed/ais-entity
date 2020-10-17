@@ -105,12 +105,10 @@
     </Compile>
     <Compile Include="src\Context.cs" />
     <Compile Include="src\Generator.cs" />
-    <Compile Include="src\pageProfile.xaml.cs">
-      <DependentUpon>pageProfile.xaml</DependentUpon>
-    </Compile>
     <Compile Include="src\pageTable.xaml.cs">
       <DependentUpon>pageTable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="src\Types.cs" />
     <Compile Include="src\Utils.cs" />
     <Compile Include="src\winAuth.xaml.cs">
       <DependentUpon>winAuth.xaml</DependentUpon>
@@ -118,8 +116,17 @@
     <Compile Include="src\winCaptcha.xaml.cs">
       <DependentUpon>winCaptcha.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\winInfoEmployee.xaml.cs">
-      <DependentUpon>winInfoEmployee.xaml</DependentUpon>
+    <Compile Include="src\winContractorsMediaRowManipulator.xaml.cs">
+      <DependentUpon>winContractorsMediaRowManipulator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\winContractorsProductionRowManipulator.xaml.cs">
+      <DependentUpon>winContractorsProductionRowManipulator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\winEmployeesRowManipulator.xaml.cs">
+      <DependentUpon>winEmployeesRowManipulator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\winGroupsRowManipulator.xaml.cs">
+      <DependentUpon>winGroupsRowManipulator.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\winInfoTable.xaml.cs">
       <DependentUpon>winInfoTable.xaml</DependentUpon>
@@ -127,6 +134,16 @@
     <Compile Include="model\Stock.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="src\winOrdReqsRowManipulator.xaml.cs">
+      <DependentUpon>winOrdReqsRowManipulator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\winStockRowManipulator.xaml.cs">
+      <DependentUpon>winStockRowManipulator.xaml</DependentUpon>
+    </Compile>
+    <Page Include="src\rsdMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="src\pageTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -139,11 +156,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="src\winInfoEmployee.xaml">
+    <Page Include="src\winContractorsMediaRowManipulator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winContractorsProductionRowManipulator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winEmployeesRowManipulator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winGroupsRowManipulator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="src\winInfoTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winLeadsRowManipulator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,11 +188,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\winLeadsRowManipulator.xaml.cs">
+      <DependentUpon>winLeadsRowManipulator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="src\winMain.xaml.cs">
       <DependentUpon>winMain.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="src\pageProfile.xaml">
+    <Page Include="src\winOrdReqsRowManipulator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winStockRowManipulator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -203,7 +243,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo.ico" />
-    <Resource Include="res\empty-photo.png" />
     <Resource Include="res\logo.ico" />
   </ItemGroup>
   <ItemGroup>
