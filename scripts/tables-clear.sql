@@ -1,7 +1,9 @@
-delete from employees;
-delete from leads;
-delete from groups;
-delete from ord_reqs;
-delete from contractors_media;
-delete from contractors_production;
-delete from stock;
+use Agency;
+
+delete from Employees;
+delete from Leads;
+delete from Groups;
+delete from OrdReqs;
+delete from ContractorsMedia;
+delete from ContractorsProduction;
+delete from Stock;
