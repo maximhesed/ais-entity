@@ -1,12 +1,12 @@
-﻿<Window x:Class="Ais.src.winMain" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Title="Company" Width="1150" Height="600" WindowStartupLocation='CenterScreen' MinWidth='800' MinHeight='410'>
+﻿<Window x:Class="Ais.src.winMain" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" Title="Company" Width="1150" Height="600" WindowStartupLocation='CenterScreen' MinWidth='800' MinHeight='410' Closing='Window_Closing'>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width='190' />
             <ColumnDefinition Width='1*' />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column='0'>
-            <Button Name='btnEmployees' Content='Employees' Click='btnEmployees_Click' Margin='7,5,3,3' Visibility='Collapsed' />
+        <StackPanel Grid.Column='0' Margin='0 4 0 0'>
+            <Button Name='btnEmployees' Content='Employees' Click='btnEmployees_Click' Visibility='Collapsed' />
             <Button Name='btnLeads' Content='Leads' Click='btnLeads_Click' Visibility='Collapsed' />
             <Button Name='btnGroups' Content='Groups' Click='btnGroups_Click' Visibility='Collapsed' />
             <Button Name='btnOrdReqs' Content='Order requests' Click='btnOrdReqs_Click' Visibility='Collapsed' />

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using Ais.model;
+using System.Windows.Controls;
+using Ais.src.model;
 
 namespace Ais.src
 {
@@ -10,26 +11,30 @@ namespace Ais.src
         readonly string action;
         readonly OrdReqs r;
         event DataGridMergeVirtualEventHandler DataGridMergeVirtual;
+        event DataGridChangedEventHandler DataGridChanged;
+        readonly Button btnSave;
 
-        public winOrdReqsRowManipulator(string action, DataGridMergeVirtualEventHandler DataGridMergeVirtual,
-                OrdReqs r = null) {
+        public winOrdReqsRowManipulator(RowManipulatorContainer container) {
             InitializeComponent();
 
-            foreach (Positions p in Context.ctx.Positions.Where(i => i.position == "Producer")) {
-                Employees empl = Context.ctx.Employees.First(i => i.id == p.uid);
+            this.action = container.action;
+            this.r = (OrdReqs) container.itemSel;
+            DataGridMergeVirtual = container.DataGridMergeVirtual;
+            DataGridChanged = container.DataGridChanged;
+            this.btnSave = container.btnSave;
 
-                this.cmbProducers.Items.Add(string.Format("[{0}] {1}{2}{3}",
-                    empl.id,
-                    empl.name_last,
-                    empl.name_first,
-                    Utils.Denull(empl.patronymic)));
-            }
+            foreach (Employees e in Context.ctx.Employees.Where(i => i.Positions.position == "Producer"))
+                this.cmbProducers.Items.Add(string.Format("[{0}] {1} {2} {3}",
+                    e.id,
+                    e.name_last,
+                    e.name_first,
+                    Utils.Denull(e.patronymic)));
 
             foreach (Leads l in Context.ctx.Leads)
-                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2}{3}",
+                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2} {3}",
                     l.id,
                     Utils.Denull(l.name_last),
-                    Utils.Denull(l.name_first),
+                    l.name_first,
                     Utils.Denull(l.patronymic)));
 
             this.cmbProducers.SelectedIndex = 0;
@@ -37,49 +42,51 @@ namespace Ais.src
             this.Title = "order request";
             this.btnDone.Margin = new Thickness(0, 7, 0, 7);
 
-            if (action == Actions.Addition) {
+            if (this.action == Actions.Addition) {
+                this.dtpPeriodDate.SelectedDate = DateTime.Now;
+
                 this.Title = this.Title.Insert(0, "Adding a new ");
                 this.btnDone.Content = "Add";
                 this.btnDone.Width = 50;
             }
-            else if (action == Actions.Modification) {
-                if (r == null)
+            else if (this.action == Actions.Modification) {
+                if (this.r == null)
                     throw new NullReferenceException();
 
-                this.txtProdName.Text = r.prod_name;
-                this.txtProdQuantity.Text = r.prod_quantity + "";
-                this.dtpPeriodDate.Text = r.period_date + "";
-                this.cmbProducers.Text = r.pid + "";
-                this.cmbLeads.Text = r.lid + "";
+                this.txtProdName.Text = this.r.prod_name;
+                this.txtProdQuantity.Text = this.r.prod_quantity + "";
+                this.dtpPeriodDate.SelectedDate = this.r.period_date;
+                this.cmbProducers.Text = this.r.pid + "";
+                this.cmbLeads.Text = this.r.lid + "";
 
-                this.r = r;
-                this.Title = this.Title.Insert(0, "Modification the ");
+                this.Title = this.Title.Insert(0, "Modification of the ");
                 this.btnDone.Content = "Modify";
                 this.btnDone.Width = 65;
             }
 
-            this.action = action;
-            this.DataGridMergeVirtual = DataGridMergeVirtual;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.ResizeMode = ResizeMode.CanMinimize;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
+            if (!Utils.CheckNumeric(this.txtProdQuantity, "product quantity", 1, isReq: true))
+                return;
+
             if (this.action == Actions.Addition) {
-                long id = 0;
+                try {
+                    Context.ctx.OrdReqs.Add(new OrdReqs {
+                        prod_name = this.txtProdName.Text,
+                        prod_quantity = int.Parse(this.txtProdQuantity.Text),
+                        period_date = DateTime.Parse(this.dtpPeriodDate.Text),
+                        pid = byte.Parse(this.cmbProducers.Text[1] + ""),
+                        lid = byte.Parse(this.cmbLeads.Text[1] + "")
+                    });
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Save the changes", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
 
-                if (Context.ctx.OrdReqs.Local.Count > 0)
-                    id = Context.ctx.OrdReqs.Local.Last().id;
-                else if (Context.ctx.OrdReqs.ToList().Count > 0)
-                    id = Context.ctx.OrdReqs.ToList().Last().id;
-
-                Context.ctx.OrdReqs.Add(new OrdReqs {
-                    id = id + 1,
-                    prod_name = this.txtProdName.Text,
-                    prod_quantity = int.Parse(this.txtProdQuantity.Text),
-                    period_date = DateTime.Parse(this.dtpPeriodDate.Text),
-                    pid = byte.Parse(this.cmbProducers.Text[1] + ""),
-                    lid = byte.Parse(this.cmbLeads.Text[1] + "")
-                });
+                    return;
+                }
             }
             else if (this.action == Actions.Modification) {
                 this.r.prod_name = this.txtProdName.Text;
@@ -88,8 +95,11 @@ namespace Ais.src
                 this.r.pid = byte.Parse(this.cmbProducers.Text[1] + "");
                 this.r.lid = byte.Parse(this.cmbLeads.Text[1] + "");
 
-                DataGridMergeVirtual?.Invoke();
+                DataGridMergeVirtual();
             }
+
+            DataGridChanged();
+            this.btnSave.Visibility = Visibility.Visible;
 
             Close();
         }

@@ -37,6 +37,9 @@
   <PropertyGroup>
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
@@ -67,48 +70,52 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="model\AgencyModel.Context.cs">
+    <Compile Include="src\model\AgencyModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AgencyModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\AgencyModel.cs">
+    <Compile Include="src\model\AgencyModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\AgencyModel.Designer.cs">
+    <Compile Include="src\model\AgencyModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AgencyModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="model\ContractorsMedia.cs">
+    <Compile Include="src\model\ContractorsMedia.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\ContractorsProduction.cs">
+    <Compile Include="src\model\ContractorsProduction.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\Employees.cs">
+    <Compile Include="src\model\Employees.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\Groups.cs">
+    <Compile Include="src\model\EntityAdditions.cs" />
+    <Compile Include="src\model\Groups.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\Leads.cs">
+    <Compile Include="src\model\Leads.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\OrdReqs.cs">
+    <Compile Include="src\model\OrdReqs.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="model\Positions.cs">
+    <Compile Include="src\model\Positions.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="src\Context.cs" />
+    <Compile Include="src\PageTableContainer.cs" />
+    <Compile Include="src\PasswordRedirector.cs" />
+    <Compile Include="src\Types.cs" />
     <Compile Include="src\Generator.cs" />
     <Compile Include="src\pageTable.xaml.cs">
       <DependentUpon>pageTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\Types.cs" />
+    <Compile Include="src\RowManipulatorContainer.cs" />
     <Compile Include="src\Utils.cs" />
     <Compile Include="src\winAuth.xaml.cs">
       <DependentUpon>winAuth.xaml</DependentUpon>
@@ -131,7 +138,7 @@
     <Compile Include="src\winInfoTable.xaml.cs">
       <DependentUpon>winInfoTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="model\Stock.cs">
+    <Compile Include="src\model\Stock.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="src\winOrdReqsRowManipulator.xaml.cs">
@@ -222,11 +229,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="model\AgencyModel.edmx">
+    <EntityDeploy Include="src\model\AgencyModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>AgencyModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="model\AgencyModel.edmx.diagram">
+    <None Include="src\model\AgencyModel.edmx.diagram">
       <DependentUpon>AgencyModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
@@ -246,12 +253,12 @@
     <Resource Include="res\logo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="model\AgencyModel.Context.tt">
+    <Content Include="src\model\AgencyModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>AgencyModel.edmx</DependentUpon>
       <LastGenOutput>AgencyModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="model\AgencyModel.tt">
+    <Content Include="src\model\AgencyModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>AgencyModel.edmx</DependentUpon>
       <LastGenOutput>AgencyModel.cs</LastGenOutput>

@@ -7,16 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ais.model
+namespace Ais.src.model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Stock
+    public partial class Groups
     {
-        public long ordid { get; set; }
-        public System.DateTime rec_date { get; set; }
+        public byte id { get; set; }
+        public byte pid { get; set; }
+        public byte adid { get; set; }
+        public byte gsid { get; set; }
+        public byte cid { get; set; }
+        public System.DateTime comp_date { get; set; }
+        public Nullable<int> lid { get; set; }
     
-        public virtual OrdReqs OrdReqs { get; set; }
+        public virtual Leads Leads { get; set; }
     }
 }

@@ -6,7 +6,7 @@
         internal static readonly string Modification = "Modification";
     };
 
-    static class EntitiesNames
+    static class EntityInstanceNames
     {
         internal static readonly string Employee = "Employee";
         internal static readonly string Position = "Position";

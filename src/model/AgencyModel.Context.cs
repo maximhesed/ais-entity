@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ais.model
+namespace Ais.src.model
 {
     using System;
     using System.Data.Entity;

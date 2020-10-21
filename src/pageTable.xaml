@@ -40,7 +40,7 @@
 
             <DataGrid.Resources>
                 <SolidColorBrush x:Key='{x:Static SystemColors.HighlightBrushKey}' Color='#ccc' />
-                <SolidColorBrush x:Key='{x:Static SystemColors.HighlightTextBrushKey}' Color='#000' />
+                <!-- A text brush color has defined in the rsdMain.xaml. -->
             </DataGrid.Resources>
 
             <DataGrid.CellStyle>

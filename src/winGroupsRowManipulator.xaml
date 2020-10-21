@@ -27,11 +27,11 @@
         <Label Content='Copywriter: ' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Margin='10 5 10 0' />
         <ComboBox Name='cmbCopywriters' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Completion date: ' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Margin='10 5 10 0' />
-        <DatePicker Name='dtpCompDate' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Grid.Column='1' Margin='10 5 10 0' />
+        <Label Content='Lead: ' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Margin='10 5 10 0' />
+        <ComboBox Name='cmbLeads' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Lead: ' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Margin='10 5 10 0' />
-        <ComboBox Name='cmbLeads' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Grid.Column='1' Margin='10 5 10 0' />
+        <Label Content='Completion date: ' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Margin='10 5 10 0' />
+        <DatePicker Name='dtpCompDate' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Grid.Column='1' Margin='10 5 10 0' />
 
         <Button Name='btnDone' FontSize='15' Grid.Row='6' Grid.ColumnSpan='2' Click='btnDone_Click' />
     </Grid>

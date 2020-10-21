@@ -3,7 +3,7 @@
         <StackPanel Margin='0' Grid.Row='1'>
             <Label HorizontalAlignment='Center' FontSize='25'>Welcome to the Company interface!</Label>
             <TextBox x:Name='txtLogin' Grid.Row='0' Grid.Column='1' Margin='150 10 150 0' Text='login' TextAlignment='Center' Height='25' VerticalContentAlignment='Center' />
-            <TextBox x:Name='txtPassw' Grid.Row='1' Grid.Column='1' Margin='150 5 150 0' Text='password' TextAlignment='Center' Height='25' VerticalContentAlignment='Center' SelectionChanged='txtPassw_SelectionChanged' />
+            <TextBox x:Name='txtPassw' Grid.Row='1' Grid.Column='1' Margin='150 5 150 0' Text='password' TextAlignment='Center' Height='25' VerticalContentAlignment='Center' />
             <Button x:Name='btnLogin' Grid.Row='2' Grid.Column='1' Margin='190,10,190,0' Click='btnLogin_Click' HorizontalAlignment='Center' Width='72' FontSize='12'>Log in</Button>
         </StackPanel>
     </Grid>

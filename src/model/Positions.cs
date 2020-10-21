@@ -7,22 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ais.model
+namespace Ais.src.model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Employees
+    public partial class Positions
     {
-        public byte id { get; set; }
-        public string name_first { get; set; }
-        public string name_last { get; set; }
-        public string patronymic { get; set; }
-        public string email { get; set; }
-        public string password_hash { get; set; }
-        public string phone { get; set; }
-        public System.DateTime reg_date { get; set; }
+        public byte uid { get; set; }
+        public string department { get; set; }
+        public string position { get; set; }
     
-        public virtual Positions Positions { get; set; }
+        public virtual Employees Employees { get; set; }
     }
 }

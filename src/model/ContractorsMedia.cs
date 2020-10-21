@@ -7,22 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ais.model
+namespace Ais.src.model
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class OrdReqs
+    public partial class ContractorsMedia
     {
-        public long id { get; set; }
-        public string prod_name { get; set; }
-        public int prod_quantity { get; set; }
-        public System.DateTime period_date { get; set; }
-        public byte pid { get; set; }
+        public int id { get; set; }
+        public string name_first { get; set; }
+        public string name_last { get; set; }
+        public string patronymic { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public decimal price { get; set; }
+        public string timestamps { get; set; }
         public Nullable<int> lid { get; set; }
     
-        public virtual ContractorsProduction ContractorsProduction { get; set; }
         public virtual Leads Leads { get; set; }
-        public virtual Stock Stock { get; set; }
     }
 }

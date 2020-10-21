@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Ais.model;
+using System.Windows.Controls;
+using Ais.src.model;
 
 namespace Ais.src
 {
@@ -11,21 +12,28 @@ namespace Ais.src
         readonly string action;
         readonly Groups g;
         event DataGridMergeVirtualEventHandler DataGridMergeVirtual;
+        event DataGridChangedEventHandler DataGridChanged;
+        readonly Button btnSave;
 
-        public winGroupsRowManipulator(string action, DataGridMergeVirtualEventHandler DataGridMergeVirtual,
-                Groups g = null) {
+        public winGroupsRowManipulator(RowManipulatorContainer container) {
             InitializeComponent();
+
+            this.action = container.action;
+            this.g = (Groups) container.itemSel;
+            DataGridMergeVirtual = container.DataGridMergeVirtual;
+            DataGridChanged = container.DataGridChanged;
+            this.btnSave = container.btnSave;
 
             foreach (Positions p in Context.ctx.Positions.Where(i =>
                     new List<string> {
                         "Producer", "Artist designer", "Graphics specialist", "Copywriter"
                     }.Contains(i.position))) {
-                Employees empl = Context.ctx.Employees.First(i => i.id == p.uid);
+                Employees e = Context.ctx.Employees.First(i => i.id == p.uid);
                 string item = string.Format("[{0}] {1} {2} {3}",
-                    empl.id,
-                    empl.name_last,
-                    empl.name_first,
-                    Utils.Denull(empl.patronymic));
+                    e.id,
+                    e.name_last,
+                    e.name_first,
+                    Utils.Denull(e.patronymic));
 
                 if (p.position == "Producer")
                     this.cmbProducers.Items.Add(item);
@@ -37,12 +45,12 @@ namespace Ais.src
                     this.cmbCopywriters.Items.Add(item);
             }
 
-            foreach (Leads lead in Context.ctx.Leads)
-                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2}{3}",
-                    lead.id,
-                    Utils.Denull(lead.name_last),
-                    Utils.Denull(lead.name_first),
-                    Utils.Denull(lead.patronymic)));
+            foreach (Leads l in Context.ctx.Leads)
+                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2} {3}",
+                    l.id,
+                    Utils.Denull(l.name_last),
+                    l.name_first,
+                    Utils.Denull(l.patronymic)));
 
             this.cmbProducers.SelectedIndex = 0;
             this.cmbArtists.SelectedIndex = 0;
@@ -52,51 +60,50 @@ namespace Ais.src
             this.Title = "group";
             this.btnDone.Margin = new Thickness(0, 7, 0, 7);
 
-            if (action == Actions.Addition) {
+            if (this.action == Actions.Addition) {
+                this.dtpCompDate.SelectedDate = DateTime.Now;
+
                 this.Title = this.Title.Insert(0, "Adding a new ");
                 this.btnDone.Content = "Add";
                 this.btnDone.Width = 50;
             }
-            else if (action == Actions.Modification) {
-                if (g == null)
+            else if (this.action == Actions.Modification) {
+                if (this.g == null)
                     throw new NullReferenceException();
 
-                Utils.SetComboBoxItem(this.cmbProducers, g.pid);
-                Utils.SetComboBoxItem(this.cmbArtists, g.pid);
-                Utils.SetComboBoxItem(this.cmbGraphics, g.pid);
-                Utils.SetComboBoxItem(this.cmbCopywriters, g.pid);
-                this.dtpCompDate.Text = g.comp_date + "";
-                Utils.SetComboBoxItem(this.cmbLeads, g.pid);
+                Utils.SetComboBoxItem(this.cmbProducers, this.g.pid);
+                Utils.SetComboBoxItem(this.cmbArtists, this.g.pid);
+                Utils.SetComboBoxItem(this.cmbGraphics, this.g.pid);
+                Utils.SetComboBoxItem(this.cmbCopywriters, this.g.pid);
+                this.dtpCompDate.SelectedDate = this.g.comp_date;
+                Utils.SetComboBoxItem(this.cmbLeads, this.g.pid);
 
-                this.g = g;
-                this.Title = this.Title.Insert(0, "Modification the ");
+                this.Title = this.Title.Insert(0, "Modification of the ");
                 this.btnDone.Content = "Modify";
                 this.btnDone.Width = 65;
             }
 
-            this.action = action;
-            this.DataGridMergeVirtual = DataGridMergeVirtual;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.ResizeMode = ResizeMode.CanMinimize;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
             if (this.action == Actions.Addition) {
-                byte id = 0;
+                try {
+                    Context.ctx.Groups.Add(new Groups {
+                        pid = byte.Parse(this.cmbProducers.Text[1] + ""),
+                        adid = byte.Parse(this.cmbArtists.Text[1] + ""),
+                        gsid = byte.Parse(this.cmbGraphics.Text[1] + ""),
+                        cid = byte.Parse(this.cmbCopywriters.Text[1] + ""),
+                        comp_date = DateTime.Parse(this.dtpCompDate.Text),
+                        lid = byte.Parse(this.cmbLeads.Text[1] + ""),
+                    });
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Save the changes", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
 
-                if (Context.ctx.Groups.Local.Count > 0)
-                    id = Context.ctx.Groups.Local.Last().id;
-                else if (Context.ctx.Groups.ToList().Count > 0)
-                    id = Context.ctx.Groups.ToList().Last().id;
-
-                Context.ctx.Groups.Add(new Groups {
-                    id = (byte) (id + 1),
-                    pid = byte.Parse(this.cmbProducers.Text[1] + ""),
-                    adid = byte.Parse(this.cmbArtists.Text[1] + ""),
-                    gsid = byte.Parse(this.cmbGraphics.Text[1] + ""),
-                    cid = byte.Parse(this.cmbCopywriters.Text[1] + ""),
-                    comp_date = DateTime.Parse(this.dtpCompDate.Text),
-                    lid = byte.Parse(this.cmbLeads.Text[1] + ""),
-                });
+                    return;
+                }
             }
             else if (this.action == Actions.Modification) {
                 this.g.pid = byte.Parse(this.cmbProducers.Text[1] + "");
@@ -106,8 +113,11 @@ namespace Ais.src
                 this.g.comp_date = DateTime.Parse(this.dtpCompDate.Text);
                 this.g.lid = byte.Parse(this.cmbLeads.Text[1] + "");
 
-                DataGridMergeVirtual?.Invoke();
+                DataGridMergeVirtual();
             }
+
+            DataGridChanged();
+            this.btnSave.Visibility = Visibility.Visible;
 
             Close();
         }

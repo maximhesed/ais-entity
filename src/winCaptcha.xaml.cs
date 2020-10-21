@@ -4,12 +4,12 @@ namespace Ais.src
 {
     public partial class winCaptcha : Window
     {
-        readonly CaptchaResultTransfer transfer;
+        event CaptchaResultTransferEventHandler CaptchaResultTransfer;
 
-        public winCaptcha(CaptchaResultTransfer transfer) {
+        public winCaptcha(CaptchaResultTransferEventHandler CaptchaResultTransfer) {
             InitializeComponent();
 
-            this.transfer = transfer;
+            this.CaptchaResultTransfer = CaptchaResultTransfer;
         }
 
         void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -28,7 +28,7 @@ namespace Ais.src
             if (this.txtCaptcha.Text == (string) this.lblCaptcha.Content) {
                 Close();
 
-                this.transfer?.Invoke(true);
+                CaptchaResultTransfer();
 
                 return;
             }
