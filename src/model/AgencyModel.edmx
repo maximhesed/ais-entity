@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="AgencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Campaigns">
+          <Key>
+            <PropertyRef Name="gid" />
+          </Key>
+          <Property Name="gid" Type="tinyint" Nullable="false" />
+          <Property Name="comp_date" Type="date" Nullable="false" />
+          <Property Name="budget_starting" Type="money" Nullable="false" />
+          <Property Name="budget_contractors" Type="money" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="ContractorsMedia">
           <Key>
             <PropertyRef Name="id" />
@@ -13,10 +23,9 @@
           <Property Name="name_first" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="name_last" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="patronymic" Type="nvarchar" MaxLength="32" />
-          <Property Name="email" Type="nvarchar" MaxLength="48" />
+          <Property Name="email" Type="nvarchar" MaxLength="256" />
           <Property Name="phone" Type="nvarchar" MaxLength="16" />
           <Property Name="price" Type="money" Nullable="false" />
-          <Property Name="timestamps" Type="nvarchar" MaxLength="238" />
           <Property Name="lid" Type="int" />
         </EntityType>
         <EntityType Name="ContractorsProduction">
@@ -27,7 +36,7 @@
           <Property Name="name_first" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="name_last" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="patronymic" Type="nvarchar" MaxLength="32" />
-          <Property Name="email" Type="nvarchar" MaxLength="48" />
+          <Property Name="email" Type="nvarchar" MaxLength="256" />
           <Property Name="phone" Type="nvarchar" MaxLength="16" />
           <Property Name="price" Type="money" Nullable="false" />
         </EntityType>
@@ -39,8 +48,8 @@
           <Property Name="name_first" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="name_last" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="patronymic" Type="nvarchar" MaxLength="32" />
-          <Property Name="email" Type="nvarchar" MaxLength="48" Nullable="false" />
-          <Property Name="password_hash" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="password_hash" Type="nvarchar" MaxLength="48" Nullable="false" />
           <Property Name="phone" Type="nvarchar" MaxLength="16" />
           <Property Name="reg_date" Type="date" Nullable="false" />
         </EntityType>
@@ -53,7 +62,6 @@
           <Property Name="adid" Type="tinyint" Nullable="false" />
           <Property Name="gsid" Type="tinyint" Nullable="false" />
           <Property Name="cid" Type="tinyint" Nullable="false" />
-          <Property Name="comp_date" Type="date" Nullable="false" />
           <Property Name="lid" Type="int" />
         </EntityType>
         <EntityType Name="Leads">
@@ -64,7 +72,7 @@
           <Property Name="name_first" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="name_last" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="patronymic" Type="nvarchar" MaxLength="32" />
-          <Property Name="email" Type="nvarchar" MaxLength="48" />
+          <Property Name="email" Type="nvarchar" MaxLength="256" />
           <Property Name="phone" Type="nvarchar" MaxLength="16" />
           <Property Name="prom_time" Type="smallint" Nullable="false" />
           <Property Name="appeal_date" Type="date" Nullable="false" />
@@ -82,9 +90,9 @@
         </EntityType>
         <EntityType Name="Positions">
           <Key>
-            <PropertyRef Name="uid" />
+            <PropertyRef Name="eid" />
           </Key>
-          <Property Name="uid" Type="tinyint" Nullable="false" />
+          <Property Name="eid" Type="tinyint" Nullable="false" />
           <Property Name="department" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="position" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
@@ -95,7 +103,21 @@
           <Property Name="ordid" Type="bigint" Nullable="false" />
           <Property Name="rec_date" Type="date" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Contracto__ordid__7C4F7684">
+        <Association Name="FK__Campaigns__gid__25869641">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Campaigns" Type="Self.Campaigns" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Campaigns">
+              <PropertyRef Name="gid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Contracto__ordid__286302EC">
           <End Role="OrdReqs" Type="Self.OrdReqs" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -109,7 +131,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Contractors__lid__7B5B524B">
+        <Association Name="FK__Contractors__lid__276EDEB3">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -123,7 +145,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Groups__lid__797309D9">
+        <Association Name="FK__Groups__lid__24927208">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -137,7 +159,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrdReqs__lid__7A672E12">
+        <Association Name="FK__OrdReqs__lid__267ABA7A">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -151,7 +173,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Positions__uid__01142BA1">
+        <Association Name="FK__Positions__eid__239E4DCF">
           <End Role="Employees" Type="Self.Employees" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -161,11 +183,11 @@
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="Positions">
-              <PropertyRef Name="uid" />
+              <PropertyRef Name="eid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Stock__ordid__7D439ABD">
+        <Association Name="FK__Stock__ordid__29572725">
           <End Role="OrdReqs" Type="Self.OrdReqs" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -180,6 +202,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="AgencyModelStoreContainer">
+          <EntitySet Name="Campaigns" EntityType="Self.Campaigns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContractorsMedia" EntityType="Self.ContractorsMedia" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContractorsProduction" EntityType="Self.ContractorsProduction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
@@ -188,27 +211,31 @@
           <EntitySet Name="OrdReqs" EntityType="Self.OrdReqs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Positions" EntityType="Self.Positions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Stock" EntityType="Self.Stock" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Contracto__ordid__7C4F7684" Association="Self.FK__Contracto__ordid__7C4F7684">
+          <AssociationSet Name="FK__Campaigns__gid__25869641" Association="Self.FK__Campaigns__gid__25869641">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Campaigns" EntitySet="Campaigns" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Contracto__ordid__286302EC" Association="Self.FK__Contracto__ordid__286302EC">
             <End Role="OrdReqs" EntitySet="OrdReqs" />
             <End Role="ContractorsProduction" EntitySet="ContractorsProduction" />
           </AssociationSet>
-          <AssociationSet Name="FK__Contractors__lid__7B5B524B" Association="Self.FK__Contractors__lid__7B5B524B">
+          <AssociationSet Name="FK__Contractors__lid__276EDEB3" Association="Self.FK__Contractors__lid__276EDEB3">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="ContractorsMedia" EntitySet="ContractorsMedia" />
           </AssociationSet>
-          <AssociationSet Name="FK__Groups__lid__797309D9" Association="Self.FK__Groups__lid__797309D9">
+          <AssociationSet Name="FK__Groups__lid__24927208" Association="Self.FK__Groups__lid__24927208">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="Groups" EntitySet="Groups" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrdReqs__lid__7A672E12" Association="Self.FK__OrdReqs__lid__7A672E12">
+          <AssociationSet Name="FK__OrdReqs__lid__267ABA7A" Association="Self.FK__OrdReqs__lid__267ABA7A">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="OrdReqs" EntitySet="OrdReqs" />
           </AssociationSet>
-          <AssociationSet Name="FK__Positions__uid__01142BA1" Association="Self.FK__Positions__uid__01142BA1">
+          <AssociationSet Name="FK__Positions__eid__239E4DCF" Association="Self.FK__Positions__eid__239E4DCF">
             <End Role="Employees" EntitySet="Employees" />
             <End Role="Positions" EntitySet="Positions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Stock__ordid__7D439ABD" Association="Self.FK__Stock__ordid__7D439ABD">
+          <AssociationSet Name="FK__Stock__ordid__29572725" Association="Self.FK__Stock__ordid__29572725">
             <End Role="OrdReqs" EntitySet="OrdReqs" />
             <End Role="Stock" EntitySet="Stock" />
           </AssociationSet>
@@ -218,6 +245,17 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AgencyModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Campaigns">
+          <Key>
+            <PropertyRef Name="gid" />
+          </Key>
+          <Property Name="gid" Type="Byte" Nullable="false" />
+          <Property Name="comp_date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="budget_starting" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="budget_contractors" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Groups" Relationship="Self.FK__Campaigns__gid__25869641" FromRole="Campaigns" ToRole="Groups" />
+        </EntityType>
         <EntityType Name="ContractorsMedia">
           <Key>
             <PropertyRef Name="id" />
@@ -226,12 +264,11 @@
           <Property Name="name_first" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name_last" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="patronymic" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="48" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="phone" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
           <Property Name="price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="timestamps" Type="String" MaxLength="238" FixedLength="false" Unicode="true" />
           <Property Name="lid" Type="Int32" />
-          <NavigationProperty Name="Leads" Relationship="Self.FK__Contractors__lid__7B5B524B" FromRole="ContractorsMedia" ToRole="Leads" />
+          <NavigationProperty Name="Leads" Relationship="Self.FK__Contractors__lid__276EDEB3" FromRole="ContractorsMedia" ToRole="Leads" />
         </EntityType>
         <EntityType Name="ContractorsProduction">
           <Key>
@@ -241,10 +278,10 @@
           <Property Name="name_first" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name_last" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="patronymic" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="48" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="phone" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
           <Property Name="price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__Contracto__ordid__7C4F7684" FromRole="ContractorsProduction" ToRole="OrdReqs" />
+          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__Contracto__ordid__286302EC" FromRole="ContractorsProduction" ToRole="OrdReqs" />
         </EntityType>
         <EntityType Name="Employees">
           <Key>
@@ -254,11 +291,11 @@
           <Property Name="name_first" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name_last" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="patronymic" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="48" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="password_hash" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password_hash" Type="String" MaxLength="48" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="phone" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
           <Property Name="reg_date" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="Positions" Relationship="Self.FK__Positions__uid__01142BA1" FromRole="Employees" ToRole="Positions" />
+          <NavigationProperty Name="Positions" Relationship="Self.FK__Positions__eid__239E4DCF" FromRole="Employees" ToRole="Positions" />
         </EntityType>
         <EntityType Name="Groups">
           <Key>
@@ -269,9 +306,9 @@
           <Property Name="adid" Type="Byte" Nullable="false" />
           <Property Name="gsid" Type="Byte" Nullable="false" />
           <Property Name="cid" Type="Byte" Nullable="false" />
-          <Property Name="comp_date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="lid" Type="Int32" />
-          <NavigationProperty Name="Leads" Relationship="Self.FK__Groups__lid__797309D9" FromRole="Groups" ToRole="Leads" />
+          <NavigationProperty Name="Campaigns" Relationship="Self.FK__Campaigns__gid__25869641" FromRole="Groups" ToRole="Campaigns" />
+          <NavigationProperty Name="Leads" Relationship="Self.FK__Groups__lid__24927208" FromRole="Groups" ToRole="Leads" />
         </EntityType>
         <EntityType Name="Leads">
           <Key>
@@ -281,13 +318,13 @@
           <Property Name="name_first" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="name_last" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="patronymic" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="48" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="phone" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
           <Property Name="prom_time" Type="Int16" Nullable="false" />
           <Property Name="appeal_date" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="ContractorsMedia" Relationship="Self.FK__Contractors__lid__7B5B524B" FromRole="Leads" ToRole="ContractorsMedia" />
-          <NavigationProperty Name="Groups" Relationship="Self.FK__Groups__lid__797309D9" FromRole="Leads" ToRole="Groups" />
-          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__OrdReqs__lid__7A672E12" FromRole="Leads" ToRole="OrdReqs" />
+          <NavigationProperty Name="ContractorsMedia" Relationship="Self.FK__Contractors__lid__276EDEB3" FromRole="Leads" ToRole="ContractorsMedia" />
+          <NavigationProperty Name="Groups" Relationship="Self.FK__Groups__lid__24927208" FromRole="Leads" ToRole="Groups" />
+          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__OrdReqs__lid__267ABA7A" FromRole="Leads" ToRole="OrdReqs" />
         </EntityType>
         <EntityType Name="OrdReqs">
           <Key>
@@ -299,18 +336,18 @@
           <Property Name="period_date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="pid" Type="Byte" Nullable="false" />
           <Property Name="lid" Type="Int32" />
-          <NavigationProperty Name="ContractorsProduction" Relationship="Self.FK__Contracto__ordid__7C4F7684" FromRole="OrdReqs" ToRole="ContractorsProduction" />
-          <NavigationProperty Name="Leads" Relationship="Self.FK__OrdReqs__lid__7A672E12" FromRole="OrdReqs" ToRole="Leads" />
-          <NavigationProperty Name="Stock" Relationship="Self.FK__Stock__ordid__7D439ABD" FromRole="OrdReqs" ToRole="Stock" />
+          <NavigationProperty Name="ContractorsProduction" Relationship="Self.FK__Contracto__ordid__286302EC" FromRole="OrdReqs" ToRole="ContractorsProduction" />
+          <NavigationProperty Name="Leads" Relationship="Self.FK__OrdReqs__lid__267ABA7A" FromRole="OrdReqs" ToRole="Leads" />
+          <NavigationProperty Name="Stock" Relationship="Self.FK__Stock__ordid__29572725" FromRole="OrdReqs" ToRole="Stock" />
         </EntityType>
         <EntityType Name="Positions">
           <Key>
-            <PropertyRef Name="uid" />
+            <PropertyRef Name="eid" />
           </Key>
-          <Property Name="uid" Type="Byte" Nullable="false" />
+          <Property Name="eid" Type="Byte" Nullable="false" />
           <Property Name="department" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="position" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Employees" Relationship="Self.FK__Positions__uid__01142BA1" FromRole="Positions" ToRole="Employees" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK__Positions__eid__239E4DCF" FromRole="Positions" ToRole="Employees" />
         </EntityType>
         <EntityType Name="Stock">
           <Key>
@@ -318,9 +355,23 @@
           </Key>
           <Property Name="ordid" Type="Int64" Nullable="false" />
           <Property Name="rec_date" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__Stock__ordid__7D439ABD" FromRole="Stock" ToRole="OrdReqs" />
+          <NavigationProperty Name="OrdReqs" Relationship="Self.FK__Stock__ordid__29572725" FromRole="Stock" ToRole="OrdReqs" />
         </EntityType>
-        <Association Name="FK__Contractors__lid__7B5B524B">
+        <Association Name="FK__Campaigns__gid__25869641">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Campaigns" Type="Self.Campaigns" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Campaigns">
+              <PropertyRef Name="gid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Contractors__lid__276EDEB3">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -334,7 +385,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Contracto__ordid__7C4F7684">
+        <Association Name="FK__Contracto__ordid__286302EC">
           <End Role="OrdReqs" Type="Self.OrdReqs" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -348,7 +399,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Positions__uid__01142BA1">
+        <Association Name="FK__Positions__eid__239E4DCF">
           <End Role="Employees" Type="Self.Employees" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -358,11 +409,11 @@
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="Positions">
-              <PropertyRef Name="uid" />
+              <PropertyRef Name="eid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Groups__lid__797309D9">
+        <Association Name="FK__Groups__lid__24927208">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -376,7 +427,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrdReqs__lid__7A672E12">
+        <Association Name="FK__OrdReqs__lid__267ABA7A">
           <End Role="Leads" Type="Self.Leads" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -390,7 +441,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Stock__ordid__7D439ABD">
+        <Association Name="FK__Stock__ordid__29572725">
           <End Role="OrdReqs" Type="Self.OrdReqs" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -405,6 +456,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="AgencyEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Campaigns" EntityType="Self.Campaigns" />
           <EntitySet Name="ContractorsMedia" EntityType="Self.ContractorsMedia" />
           <EntitySet Name="ContractorsProduction" EntityType="Self.ContractorsProduction" />
           <EntitySet Name="Employees" EntityType="Self.Employees" />
@@ -413,27 +465,31 @@
           <EntitySet Name="OrdReqs" EntityType="Self.OrdReqs" />
           <EntitySet Name="Positions" EntityType="Self.Positions" />
           <EntitySet Name="Stock" EntityType="Self.Stock" />
-          <AssociationSet Name="FK__Contractors__lid__7B5B524B" Association="Self.FK__Contractors__lid__7B5B524B">
+          <AssociationSet Name="FK__Campaigns__gid__25869641" Association="Self.FK__Campaigns__gid__25869641">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Campaigns" EntitySet="Campaigns" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Contractors__lid__276EDEB3" Association="Self.FK__Contractors__lid__276EDEB3">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="ContractorsMedia" EntitySet="ContractorsMedia" />
           </AssociationSet>
-          <AssociationSet Name="FK__Contracto__ordid__7C4F7684" Association="Self.FK__Contracto__ordid__7C4F7684">
+          <AssociationSet Name="FK__Contracto__ordid__286302EC" Association="Self.FK__Contracto__ordid__286302EC">
             <End Role="OrdReqs" EntitySet="OrdReqs" />
             <End Role="ContractorsProduction" EntitySet="ContractorsProduction" />
           </AssociationSet>
-          <AssociationSet Name="FK__Positions__uid__01142BA1" Association="Self.FK__Positions__uid__01142BA1">
+          <AssociationSet Name="FK__Positions__eid__239E4DCF" Association="Self.FK__Positions__eid__239E4DCF">
             <End Role="Employees" EntitySet="Employees" />
             <End Role="Positions" EntitySet="Positions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Groups__lid__797309D9" Association="Self.FK__Groups__lid__797309D9">
+          <AssociationSet Name="FK__Groups__lid__24927208" Association="Self.FK__Groups__lid__24927208">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="Groups" EntitySet="Groups" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrdReqs__lid__7A672E12" Association="Self.FK__OrdReqs__lid__7A672E12">
+          <AssociationSet Name="FK__OrdReqs__lid__267ABA7A" Association="Self.FK__OrdReqs__lid__267ABA7A">
             <End Role="Leads" EntitySet="Leads" />
             <End Role="OrdReqs" EntitySet="OrdReqs" />
           </AssociationSet>
-          <AssociationSet Name="FK__Stock__ordid__7D439ABD" Association="Self.FK__Stock__ordid__7D439ABD">
+          <AssociationSet Name="FK__Stock__ordid__29572725" Association="Self.FK__Stock__ordid__29572725">
             <End Role="OrdReqs" EntitySet="OrdReqs" />
             <End Role="Stock" EntitySet="Stock" />
           </AssociationSet>
@@ -444,6 +500,17 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="AgencyModelStoreContainer" CdmEntityContainer="AgencyEntities">
+          <EntitySetMapping Name="Campaigns">
+            <EntityTypeMapping TypeName="AgencyModel.Campaigns">
+              <MappingFragment StoreEntitySet="Campaigns">
+                <ScalarProperty Name="gid" ColumnName="gid" />
+                <ScalarProperty Name="comp_date" ColumnName="comp_date" />
+                <ScalarProperty Name="budget_starting" ColumnName="budget_starting" />
+                <ScalarProperty Name="budget_contractors" ColumnName="budget_contractors" />
+                <ScalarProperty Name="status" ColumnName="status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ContractorsMedia">
             <EntityTypeMapping TypeName="AgencyModel.ContractorsMedia">
               <MappingFragment StoreEntitySet="ContractorsMedia">
@@ -454,7 +521,6 @@
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="phone" ColumnName="phone" />
                 <ScalarProperty Name="price" ColumnName="price" />
-                <ScalarProperty Name="timestamps" ColumnName="timestamps" />
                 <ScalarProperty Name="lid" ColumnName="lid" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -494,7 +560,6 @@
                 <ScalarProperty Name="adid" ColumnName="adid" />
                 <ScalarProperty Name="gsid" ColumnName="gsid" />
                 <ScalarProperty Name="cid" ColumnName="cid" />
-                <ScalarProperty Name="comp_date" ColumnName="comp_date" />
                 <ScalarProperty Name="lid" ColumnName="lid" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -528,7 +593,7 @@
           <EntitySetMapping Name="Positions">
             <EntityTypeMapping TypeName="AgencyModel.Positions">
               <MappingFragment StoreEntitySet="Positions">
-                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="eid" ColumnName="eid" />
                 <ScalarProperty Name="department" ColumnName="department" />
                 <ScalarProperty Name="position" ColumnName="position" />
               </MappingFragment>

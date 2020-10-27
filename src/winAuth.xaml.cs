@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,6 +22,9 @@ namespace Ais.src
         }
 
         void Window_Loaded(object sender, RoutedEventArgs e) {
+            if (Context.ctx.Employees.Count() == 0)
+                RedirectToFirstUse();
+
             this.redirector = new PasswordRedirector(this.txtPassw);
 
             this.txtLogin.Foreground = new SolidColorBrush((Color) ColorConverter.ConvertFromString(this.color));
@@ -36,6 +38,12 @@ namespace Ais.src
             Employees empl;
             string login = this.txtLogin.Text;
             string passw = this.redirector.Passw;
+
+            if (Context.ctx.Employees.Count() == 0) {
+                RedirectToFirstUse();
+
+                return;
+            }
 
             if (string.IsNullOrEmpty(login) || login == "login") {
                 MessageBox.Show("Login entered is empty.", "Auth");
@@ -112,6 +120,18 @@ namespace Ais.src
 
         void OnCaptchaResultTransfer() {
             this.fails--;
+        }
+
+        void RedirectToFirstUse() {
+            this.Visibility = Visibility.Collapsed;
+
+            MessageBox.Show("There are no employees in the database. " +
+                "You have to register yourself as the agency director.", "Auth",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+
+            new winEmployeesRowManipulator().ShowDialog();
+
+            this.Visibility = Visibility.Visible;
         }
     }
 }

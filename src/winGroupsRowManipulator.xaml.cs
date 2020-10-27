@@ -28,8 +28,8 @@ namespace Ais.src
                     new List<string> {
                         "Producer", "Artist designer", "Graphics specialist", "Copywriter"
                     }.Contains(i.position))) {
-                Employees e = Context.ctx.Employees.First(i => i.id == p.uid);
-                string item = string.Format("[{0}] {1} {2} {3}",
+                Employees e = Context.ctx.Employees.First(i => i.id == p.eid);
+                string item = string.Format("({0}) {1} {2} {3}",
                     e.id,
                     e.name_last,
                     e.name_first,
@@ -46,7 +46,7 @@ namespace Ais.src
             }
 
             foreach (Leads l in Context.ctx.Leads)
-                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2} {3}",
+                this.cmbLeads.Items.Add(string.Format("({0}) {1}{2} {3}",
                     l.id,
                     Utils.Denull(l.name_last),
                     l.name_first,
@@ -72,11 +72,12 @@ namespace Ais.src
                     throw new NullReferenceException();
 
                 Utils.SetComboBoxItem(this.cmbProducers, this.g.pid);
-                Utils.SetComboBoxItem(this.cmbArtists, this.g.pid);
-                Utils.SetComboBoxItem(this.cmbGraphics, this.g.pid);
-                Utils.SetComboBoxItem(this.cmbCopywriters, this.g.pid);
-                this.dtpCompDate.SelectedDate = this.g.comp_date;
-                Utils.SetComboBoxItem(this.cmbLeads, this.g.pid);
+                Utils.SetComboBoxItem(this.cmbArtists, this.g.adid);
+                Utils.SetComboBoxItem(this.cmbGraphics, this.g.gsid);
+                Utils.SetComboBoxItem(this.cmbCopywriters, this.g.cid);
+                Utils.SetComboBoxItem(this.cmbLeads, (long) this.g.lid);
+                this.txtBudget.Text = this.g.Campaigns.budget_starting + "";
+                this.dtpCompDate.SelectedDate = this.g.Campaigns.comp_date;
 
                 this.Title = this.Title.Insert(0, "Modification of the ");
                 this.btnDone.Content = "Modify";
@@ -95,7 +96,10 @@ namespace Ais.src
                         adid = byte.Parse(this.cmbArtists.Text[1] + ""),
                         gsid = byte.Parse(this.cmbGraphics.Text[1] + ""),
                         cid = byte.Parse(this.cmbCopywriters.Text[1] + ""),
-                        comp_date = DateTime.Parse(this.dtpCompDate.Text),
+                        Campaigns = new Campaigns {
+                            comp_date = DateTime.Parse(this.dtpCompDate.Text),
+                            budget_starting = decimal.Parse(this.txtBudget.Text)
+                        },
                         lid = byte.Parse(this.cmbLeads.Text[1] + ""),
                     });
                 } catch (Exception ex) {
@@ -110,7 +114,10 @@ namespace Ais.src
                 this.g.adid = byte.Parse(this.cmbArtists.Text[1] + "");
                 this.g.gsid = byte.Parse(this.cmbGraphics.Text[1] + "");
                 this.g.cid = byte.Parse(this.cmbCopywriters.Text[1] + "");
-                this.g.comp_date = DateTime.Parse(this.dtpCompDate.Text);
+                this.g.Campaigns = new Campaigns {
+                    comp_date = DateTime.Parse(this.dtpCompDate.Text),
+                    budget_starting = decimal.Parse(this.txtBudget.Text)
+                };
                 this.g.lid = byte.Parse(this.cmbLeads.Text[1] + "");
 
                 DataGridMergeVirtual();

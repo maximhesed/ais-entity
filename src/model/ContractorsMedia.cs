@@ -21,7 +21,6 @@ namespace Ais.src.model
         public string email { get; set; }
         public string phone { get; set; }
         public decimal price { get; set; }
-        public string timestamps { get; set; }
         public Nullable<int> lid { get; set; }
     
         public virtual Leads Leads { get; set; }

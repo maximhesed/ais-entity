@@ -23,7 +23,7 @@ namespace Ais.src
             this.btnSave = container.btnSave;
 
             foreach (OrdReqs r in Context.ctx.OrdReqs)
-                this.cmbOrdReqs.Items.Add(string.Format("[{0}] {1} {2} {3}",
+                this.cmbOrdReqs.Items.Add(string.Format("({0}) {1} {2} {3}",
                     r.id, r.prod_name, r.prod_quantity, r.period_date));
 
             this.cmbOrdReqs.SelectedIndex = 0;

@@ -11,11 +11,11 @@ namespace Ais.src
         internal static AgencyEntities ctx = new AgencyEntities();
 
         internal static bool CheckGroupsDependencies() {
-            if (ctx.Positions.Where(i => i.position == "Producer") == null
-                    || ctx.Positions.Where(i => i.position == "Artist designer") == null
-                    || ctx.Positions.Where(i => i.position == "Graphics specialist") == null
-                    || ctx.Positions.Where(i => i.position == "Copywriter") == null
-                    || ctx.Leads.ToList().Count == 0) {
+            if (ctx.Positions.Where(i => i.position == "Producer").Count() == 0
+                    || ctx.Positions.Where(i => i.position == "Artist designer").Count() == 0
+                    || ctx.Positions.Where(i => i.position == "Graphics specialist").Count() == 0
+                    || ctx.Positions.Where(i => i.position == "Copywriter").Count() == 0
+                    || ctx.Leads.Count() == 0) {
                 ShowInsufficientDataMsg();
 
                 return false;
@@ -25,8 +25,8 @@ namespace Ais.src
         }
 
         internal static bool CheckOrdReqsDependencies() {
-            if (ctx.Positions.Where(i => i.position == "Producer") == null
-                    || ctx.Leads.ToList().Count == 0) {
+            if (ctx.Positions.Where(i => i.position == "Producer").Count() == 0
+                    || ctx.Leads.Count() == 0) {
                 ShowInsufficientDataMsg();
 
                 return false;
@@ -36,7 +36,7 @@ namespace Ais.src
         }
 
         internal static bool CheckContractorsMediaDependencies() {
-            if (ctx.Leads.ToList().Count == 0) {
+            if (ctx.Leads.Count() == 0) {
                 ShowInsufficientDataMsg();
 
                 return false;
@@ -46,7 +46,7 @@ namespace Ais.src
         }
 
         internal static bool CheckContractorsProductionDependencies() {
-            if (ctx.OrdReqs.ToList().Count == 0) {
+            if (ctx.OrdReqs.Count() == 0) {
                 ShowInsufficientDataMsg();
 
                 return false;
@@ -56,7 +56,7 @@ namespace Ais.src
         }
 
         internal static bool CheckStockDependencies() {
-            if (ctx.OrdReqs.ToList().Count == 0) {
+            if (ctx.OrdReqs.Count() == 0) {
                 ShowInsufficientDataMsg();
 
                 return false;

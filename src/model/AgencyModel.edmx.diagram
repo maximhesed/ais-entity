@@ -4,21 +4,23 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="ec60dd3681d94e8eb6d235901a938998" Name="Diagram1">
+      <Diagram DiagramId="dc1d9c13dbd144a49b5793ef466fdba9" Name="Diagram1">
+        <EntityTypeShape EntityType="AgencyModel.Campaigns" Width="1.5" PointX="5.25" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="AgencyModel.ContractorsMedia" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="AgencyModel.ContractorsProduction" Width="1.5" PointX="5.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.ContractorsProduction" Width="1.5" PointX="5.25" PointY="8.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AgencyModel.Employees" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="AgencyModel.Groups" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.Groups" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="AgencyModel.Leads" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AgencyModel.OrdReqs" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AgencyModel.OrdReqs" Width="1.5" PointX="3" PointY="9.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AgencyModel.Positions" Width="1.5" PointX="8" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="AgencyModel.Stock" Width="1.5" PointX="5.25" PointY="11.75" IsExpanded="true" />
-        <AssociationConnector Association="AgencyModel.FK__Contractors__lid__7B5B524B" ManuallyRouted="false" />
-        <AssociationConnector Association="AgencyModel.FK__Contracto__ordid__7C4F7684" ManuallyRouted="false" />
-        <AssociationConnector Association="AgencyModel.FK__Positions__uid__01142BA1" ManuallyRouted="false" />
-        <AssociationConnector Association="AgencyModel.FK__Groups__lid__797309D9" ManuallyRouted="false" />
-        <AssociationConnector Association="AgencyModel.FK__OrdReqs__lid__7A672E12" ManuallyRouted="false" />
-        <AssociationConnector Association="AgencyModel.FK__Stock__ordid__7D439ABD" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="AgencyModel.Stock" Width="1.5" PointX="5.25" PointY="11.5" IsExpanded="true" />
+        <AssociationConnector Association="AgencyModel.FK__Campaigns__gid__25869641" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Contractors__lid__276EDEB3" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Contracto__ordid__286302EC" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Positions__eid__239E4DCF" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Groups__lid__24927208" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__OrdReqs__lid__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="AgencyModel.FK__Stock__ordid__29572725" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

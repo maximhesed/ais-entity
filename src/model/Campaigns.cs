@@ -12,12 +12,14 @@ namespace Ais.src.model
     using System;
     using System.Collections.Generic;
     
-    public partial class Positions
+    public partial class Campaigns
     {
-        public byte eid { get; set; }
-        public string department { get; set; }
-        public string position { get; set; }
+        public byte gid { get; set; }
+        public System.DateTime comp_date { get; set; }
+        public decimal budget_starting { get; set; }
+        public decimal budget_contractors { get; set; }
+        public bool status { get; set; }
     
-        public virtual Employees Employees { get; set; }
+        public virtual Groups Groups { get; set; }
     }
 }

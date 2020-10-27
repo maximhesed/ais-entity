@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Ais.src.model;
@@ -23,7 +24,7 @@ namespace Ais.src
             this.btnSave = container.btnSave;
 
             foreach (Leads l in Context.ctx.Leads)
-                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2} {3}",
+                this.cmbLeads.Items.Add(string.Format("({0}) {1}{2} {3}",
                     l.id,
                     Utils.Denull(l.name_last),
                     l.name_first,
@@ -60,6 +61,13 @@ namespace Ais.src
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
+            int lid;
+
+            this.txtLastName.Text = Utils.Denull(this.txtLastName.Text);
+            this.txtPatronymic.Text = Utils.Denull(this.txtPatronymic.Text);
+            this.txtEmail.Text = Utils.Denull(this.txtEmail.Text);
+            this.txtPhone.Text = Utils.Denull(this.txtPhone.Text);
+
             if (!Utils.CheckName(this.txtFirstName, "first name", true))
                 return;
 
@@ -75,6 +83,16 @@ namespace Ais.src
             if (!Utils.CheckPrice(this.txtPrice))
                 return;
 
+            lid = int.Parse(this.cmbLeads.Text[1] + "");
+            if (Context.ctx.Groups.Where(g => g.lid == lid).Count() == 0) {
+                MessageBox.Show("This lead isn't participates in a campaign.", "",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                this.cmbLeads.Focus();
+
+                return;
+            }
+
             this.txtLastName.Text = Utils.Null(this.txtLastName.Text);
             this.txtPatronymic.Text = Utils.Null(this.txtPatronymic.Text);
             this.txtEmail.Text = Utils.Null(this.txtEmail.Text);
@@ -89,7 +107,7 @@ namespace Ais.src
                         email = this.txtEmail.Text,
                         phone = this.txtPhone.Text,
                         price = decimal.Parse(this.txtPrice.Text + ""),
-                        lid = int.Parse(this.cmbLeads.Text[1] + "")
+                        lid = lid
                     });
                 } catch (Exception ex) {
                     MessageBox.Show(ex.Message, "Save the changes", MessageBoxButton.OK,
@@ -105,7 +123,7 @@ namespace Ais.src
                 this.cm.email = this.txtEmail.Text;
                 this.cm.phone = this.txtPhone.Text;
                 this.cm.price = decimal.Parse(this.txtPrice.Text + "");
-                this.cm.lid = int.Parse(this.cmbLeads.Text[1] + "");
+                this.cm.lid = lid;
 
                 DataGridMergeVirtual();
             }

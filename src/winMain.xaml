@@ -9,6 +9,7 @@
             <Button Name='btnEmployees' Content='Employees' Click='btnEmployees_Click' Visibility='Collapsed' />
             <Button Name='btnLeads' Content='Leads' Click='btnLeads_Click' Visibility='Collapsed' />
             <Button Name='btnGroups' Content='Groups' Click='btnGroups_Click' Visibility='Collapsed' />
+            <Button Name='btnCampaigns' Content='Campaigns' Click='btnCampaigns_Click' Visibility='Collapsed' />
             <Button Name='btnOrdReqs' Content='Order requests' Click='btnOrdReqs_Click' Visibility='Collapsed' />
             <Button Name='btnContractorsMedia' Content='Media contractors' Click='btnContractorsMedia_Click' Visibility='Collapsed' />
             <Button Name='btnContractorsProduction' Content='Production contractors' Click='btnContractorsProduction_Click' Visibility='Collapsed' />

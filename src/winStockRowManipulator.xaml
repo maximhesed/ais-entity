@@ -18,10 +18,10 @@
             <ColumnDefinition Width='7*' />
         </Grid.ColumnDefinitions>
 
-        <Label Content='Order request: ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
+        <Label Content='Order request* ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
         <ComboBox Name='cmbOrdReqs' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Date of receiving: ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
+        <Label Content='Date of receiving* ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
         <DatePicker Name='dtpRecDate' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Grid.Column='1' Margin='10 5 10 0' />
 
         <Button Name='btnDone' FontSize='15' Grid.Row='2' Grid.ColumnSpan='2' Click='btnDone_Click' />

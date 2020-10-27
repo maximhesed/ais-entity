@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="src\ConstraintContainer.cs" />
     <Compile Include="src\model\AgencyModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -85,6 +86,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AgencyModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="src\model\Campaigns.cs">
+      <DependentUpon>AgencyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="src\model\ContractorsMedia.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
@@ -95,6 +99,7 @@
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="src\model\EntityAdditions.cs" />
+    <Compile Include="src\Context.cs" />
     <Compile Include="src\model\Groups.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
@@ -107,7 +112,9 @@
     <Compile Include="src\model\Positions.cs">
       <DependentUpon>AgencyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="src\Context.cs" />
+    <Compile Include="src\model\Stock.cs">
+      <DependentUpon>AgencyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="src\PageTableContainer.cs" />
     <Compile Include="src\PasswordRedirector.cs" />
     <Compile Include="src\Types.cs" />
@@ -119,6 +126,9 @@
     <Compile Include="src\Utils.cs" />
     <Compile Include="src\winAuth.xaml.cs">
       <DependentUpon>winAuth.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="src\winCampaignsRowManipulator.xaml.cs">
+      <DependentUpon>winCampaignsRowManipulator.xaml</DependentUpon>
     </Compile>
     <Compile Include="src\winCaptcha.xaml.cs">
       <DependentUpon>winCaptcha.xaml</DependentUpon>
@@ -138,9 +148,6 @@
     <Compile Include="src\winInfoTable.xaml.cs">
       <DependentUpon>winInfoTable.xaml</DependentUpon>
     </Compile>
-    <Compile Include="src\model\Stock.cs">
-      <DependentUpon>AgencyModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="src\winOrdReqsRowManipulator.xaml.cs">
       <DependentUpon>winOrdReqsRowManipulator.xaml</DependentUpon>
     </Compile>
@@ -156,6 +163,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="src\winAuth.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="src\winCampaignsRowManipulator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -229,17 +240,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <EntityDeploy Include="src\model\AgencyModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>AgencyModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <None Include="src\model\AgencyModel.edmx.diagram">
       <DependentUpon>AgencyModel.edmx</DependentUpon>
-    </None>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

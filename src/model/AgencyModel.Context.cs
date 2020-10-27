@@ -25,6 +25,7 @@ namespace Ais.src.model
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Campaigns> Campaigns { get; set; }
         public virtual DbSet<ContractorsMedia> ContractorsMedia { get; set; }
         public virtual DbSet<ContractorsProduction> ContractorsProduction { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }

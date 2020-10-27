@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Ais.src.model;
 
 namespace Ais.src
@@ -14,7 +16,11 @@ namespace Ais.src
         event DataGridChangedEventHandler DataGridChanged;
         event DbChangedEventHandler DbChanged;
         bool isDataGridChanged;
-        PageTableContainer container;
+        ConstraintContainer constraint;
+        Dictionary<string, ConstraintContainer> constraints;
+
+        /* This is needed, to get the specific employees by an department. */
+        string conDep;
 
         enum Changes
         {
@@ -23,7 +29,9 @@ namespace Ais.src
             Leaved
         };
 
-        //*
+        /*
+        // Test
+
         public winMain() {
             Employees e = Context.ctx.Employees.First(i => i.id == 1);
 
@@ -46,6 +54,7 @@ namespace Ais.src
             this.container.DataGridChanged = DataGridChanged;
             this.container.DbChanged = DbChanged;
         }
+
         //*/
 
         public winMain(int eid) {
@@ -66,13 +75,10 @@ namespace Ais.src
 
             DataGridChanged += OnDataGridChanged;
             DbChanged += OnDbChanged;
-
-            this.container.DataGridChanged = DataGridChanged;
-            this.container.DbChanged = DbChanged;
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-            if (isDataGridChanged) {
+            if (this.isDataGridChanged) {
                 MessageBoxResult result = MessageBox.Show("Do you want to save the changes?",
                     "Save the changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes) {
@@ -86,100 +92,162 @@ namespace Ais.src
             }
         }
 
-        void btnEmployees_Click(object sender, RoutedEventArgs e) {
+        PageTableContainer<T> InitContainer<T>(IQueryable<T> entity, string entityInstanceName) {
+            PageTableContainer<T> container = new PageTableContainer<T> {
+                entity = entity,
+                entityInstanceName = entityInstanceName,
+                DataGridChanged = DataGridChanged,
+                DbChanged = DbChanged
+            };
+
+            if (this.constraint.items != null) {
+                foreach (MenuItem item in this.constraint.items) {
+                    if (item.Parent != null) {
+                        /* Detach the items from the old logical parent, to attach
+                         * it to an other data grid's context menu. */
+                        (this.FrameMain.Content as pageTable).dataGrid.ContextMenu.Items.Clear();
+
+                        break;
+                    }
+                }
+            }
+
+            container.constraint = this.constraint = this.constraints[entityInstanceName];
+
+            return container;
+        }
+
+        int PrepareNavigation<T>(IQueryable<T> entity, string entityInstanceName,
+                string title, ref PageTableContainer<T> container) {
             if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+                return -1;
+
+            if (this.conDep != null) {
+                IQueryable<Employees> e = entity as IQueryable<Employees>;
+
+                container = InitContainer((IQueryable<T>) e.Where(
+                    empl => empl.Positions.department == this.conDep), entityInstanceName);
+            }
+            else
+                container = InitContainer(entity, entityInstanceName);
+
+            this.Title = this.title + " -> " + title;
+
+            return 0;
+        }
+
+        void btnEmployees_Click(object sender, RoutedEventArgs e) {
+            PageTableContainer<Employees> container = new PageTableContainer<Employees>();
+
+            if (PrepareNavigation(Context.ctx.Employees, EntityInstanceNames.Employee,
+                    (string) this.btnEmployees.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.Employees.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.Employee;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnEmployees.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnLeads_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<Leads> container = new PageTableContainer<Leads>();
+
+            if (PrepareNavigation(Context.ctx.Leads, EntityInstanceNames.Lead,
+                    (string) this.btnLeads.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.Leads.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.Lead;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnLeads.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnGroups_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<Groups> container = new PageTableContainer<Groups>();
+
+            if (PrepareNavigation(Context.ctx.Groups, EntityInstanceNames.Group,
+                    (string) this.btnGroups.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.Groups.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.Group;
+            this.FrameMain.Navigate(new pageTable(container));
+        }
 
-            this.FrameMain.Navigate(new pageTable(this.container));
+        void btnCampaigns_Click(object sender, RoutedEventArgs e) {
+            PageTableContainer<Campaigns> container = new PageTableContainer<Campaigns>();
 
-            this.Title = this.title + " -> " + this.btnGroups.Content;
+            if (PrepareNavigation(Context.ctx.Campaigns, EntityInstanceNames.Campaign,
+                    (string) this.btnCampaigns.Content, ref container) == -1)
+                return;
+
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnOrdReqs_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<OrdReqs> container = new PageTableContainer<OrdReqs>();
+
+            if (PrepareNavigation(Context.ctx.OrdReqs, EntityInstanceNames.OrdReq,
+                    (string) this.btnOrdReqs.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.OrdReqs.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.OrdReq;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnOrdReqs.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnContractorsMedia_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<ContractorsMedia> container =
+                new PageTableContainer<ContractorsMedia>();
+
+            if (PrepareNavigation(Context.ctx.ContractorsMedia,
+                    EntityInstanceNames.ContractorMedia,
+                    (string) this.btnContractorsMedia.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.ContractorsMedia.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.ContractorMedia;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnContractorsMedia.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnContractorsProduction_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<ContractorsProduction> container =
+                new PageTableContainer<ContractorsProduction>();
+
+            if (PrepareNavigation(Context.ctx.ContractorsProduction,
+                    EntityInstanceNames.ContractorProduction,
+                    (string) this.btnContractorsProduction.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.ContractorsProduction.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.ContractorProduction;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnContractorsProduction.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void btnStock_Click(object sender, RoutedEventArgs e) {
-            if (this.isDataGridChanged && ConfirmSaveChanges() == Changes.Leaved)
+            PageTableContainer<Stock> container = new PageTableContainer<Stock>();
+
+            if (PrepareNavigation(Context.ctx.Stock, EntityInstanceNames.Stock,
+                    (string) this.btnStock.Content, ref container) == -1)
                 return;
 
-            this.container.lstEntities = Context.ctx.Stock.ToList<object>();
-            this.container.entityInstanceName = EntityInstanceNames.Stock;
-
-            this.FrameMain.Navigate(new pageTable(this.container));
-
-            this.Title = this.title + " -> " + this.btnStock.Content;
+            this.FrameMain.Navigate(new pageTable(container));
         }
 
         void ConstraintAccess() {
-            Positions p = Context.ctx.Positions.FirstOrDefault(i => i.uid == this.eid);
+            Positions p = Context.ctx.Positions.FirstOrDefault(i => i.eid == this.eid);
+
+            this.constraints = new Dictionary<string, ConstraintContainer>();
+            foreach (string f in EntityInstanceNames.ToList())
+                this.constraints.Add(f, new ConstraintContainer(
+                    new bool[4] { false, false, false, false }));
 
             switch (p.department) {
                 case "Administrative":
                     switch (p.position) {
                         case "Director":
+                            /*
+                            foreach (string f in EntityInstanceNames.ToList())
+                                this.constraints[f] = new ConstraintContainer(
+                                    new bool[4] { true, true, false, false });
+                            //*/
+
+                            //*
+                            foreach (string f in EntityInstanceNames.ToList())
+                                this.constraints[f] = new ConstraintContainer(
+                                    new bool[4] { true, true, true, true }, true);
+                            //*/
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnLeads.Visibility = Visibility.Visible;
                             this.btnGroups.Visibility = Visibility.Visible;
+                            this.btnCampaigns.Visibility = Visibility.Visible;
                             this.btnOrdReqs.Visibility = Visibility.Visible;
                             this.btnContractorsMedia.Visibility = Visibility.Visible;
                             this.btnContractorsProduction.Visibility = Visibility.Visible;
@@ -193,15 +261,22 @@ namespace Ais.src
                 case "Leads service":
                     switch (p.position) {
                         case "Director":
-                            /* Can {info} on Employees its employees. 
-                             * Can {info} on Leads. */
+                            this.conDep = "Leads service";
+
+                            this.constraints[EntityInstanceNames.Employee] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.Lead] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnLeads.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Senior manager":
-                            /* Can {add, info, remove} on Leads. */
+                            this.constraints[EntityInstanceNames.Lead] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+
                             this.btnLeads.Visibility = Visibility.Visible;
 
                             break;
@@ -215,18 +290,30 @@ namespace Ais.src
                 case "Creative":
                     switch (p.position) {
                         case "Director":
-                            /* Can {info} on Employees its employees. 
-                             * Can {info} on Groups. 
-                             * Can {info} on OrdReqs. */
+                            this.conDep = "Creative";
+
+                            this.constraints[EntityInstanceNames.Employee] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.Group] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.Campaign] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.OrdReq] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnGroups.Visibility = Visibility.Visible;
+                            this.btnCampaigns.Visibility = Visibility.Visible;
                             this.btnOrdReqs.Visibility = Visibility.Visible;
 
                             break;
 
                         case "General producer":
-                            /* Can {add, info, remove} on Groups.
-                             * Can {add, info, remove} on OrdReqs. */
+                            this.constraints[EntityInstanceNames.Group] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+                            this.constraints[EntityInstanceNames.OrdReq] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+
                             this.btnGroups.Visibility = Visibility.Visible;
                             this.btnOrdReqs.Visibility = Visibility.Visible;
 
@@ -241,15 +328,22 @@ namespace Ais.src
                 case "Media":
                     switch (p.position) {
                         case "Director":
-                            /* Can {info} on Employees its employees.
-                             * Can {info} on ContractorsMedia. */
+                            this.conDep = "Media";
+
+                            this.constraints[EntityInstanceNames.Employee] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.ContractorMedia] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnContractorsMedia.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Media buyer specialist":
-                            /* Can {add, info, remove} on ContractorsMedia. */
+                            this.constraints[EntityInstanceNames.ContractorMedia] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+
                             this.btnContractorsMedia.Visibility = Visibility.Visible;
 
                             break;
@@ -263,21 +357,30 @@ namespace Ais.src
                 case "Production":
                     switch (p.position) {
                         case "Director":
-                            /* Can {info} on Employees its employees.
-                             * Can {info} on ContractorsProduction. */
+                            this.conDep = "Production";
+
+                            this.constraints[EntityInstanceNames.Employee] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.ContractorProduction] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnContractorsProduction.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Senior manager":
-                            /* Can {add, info, remove} on ContractorsProduction. */
+                            this.constraints[EntityInstanceNames.ContractorProduction] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+
                             this.btnContractorsProduction.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Manager":
-                            /* Can {info} on OrdReqs. */
+                            this.constraints[EntityInstanceNames.OrdReq] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnOrdReqs.Visibility = Visibility.Visible;
 
                             break;
@@ -291,21 +394,30 @@ namespace Ais.src
                 case "Courier":
                     switch (p.position) {
                         case "Director":
-                            /* Can {info} on Employees its employees.
-                             * Can {info} on Stock. */
+                            this.conDep = "Courier";
+
+                            this.constraints[EntityInstanceNames.Employee] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+                            this.constraints[EntityInstanceNames.Stock] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnEmployees.Visibility = Visibility.Visible;
                             this.btnStock.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Senior manager":
-                            /* Can {add, info, remove} on Stock. */
+                            this.constraints[EntityInstanceNames.Stock] = new ConstraintContainer(
+                                new bool[4] { true, true, true, true }, true);
+
                             this.btnStock.Visibility = Visibility.Visible;
 
                             break;
 
                         case "Manager":
-                            /* Can {info} on Stock. */
+                            this.constraints[EntityInstanceNames.Stock] = new ConstraintContainer(
+                                new bool[4] { true, true, false, false });
+
                             this.btnStock.Visibility = Visibility.Visible;
 
                             break;
@@ -325,7 +437,7 @@ namespace Ais.src
             return;
         }
 
-        /* When the database has changed, the data on the grid considered 
+        /* When the database has changed, the data on the grid considered
          * current. */
         void OnDbChanged() {
             this.isDataGridChanged = false;

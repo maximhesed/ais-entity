@@ -24,14 +24,14 @@ namespace Ais.src
             this.btnSave = container.btnSave;
 
             foreach (Employees e in Context.ctx.Employees.Where(i => i.Positions.position == "Producer"))
-                this.cmbProducers.Items.Add(string.Format("[{0}] {1} {2} {3}",
+                this.cmbProducers.Items.Add(string.Format("({0}) {1} {2} {3}",
                     e.id,
                     e.name_last,
                     e.name_first,
                     Utils.Denull(e.patronymic)));
 
             foreach (Leads l in Context.ctx.Leads)
-                this.cmbLeads.Items.Add(string.Format("[{0}] {1}{2} {3}",
+                this.cmbLeads.Items.Add(string.Format("({0}) {1}{2} {3}",
                     l.id,
                     Utils.Denull(l.name_last),
                     l.name_first,

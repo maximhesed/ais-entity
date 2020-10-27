@@ -12,7 +12,30 @@ namespace Ais.src
         event DataGridMergeVirtualEventHandler DataGridMergeVirtual;
         event DataGridChangedEventHandler DataGridChanged;
         readonly Button btnSave;
-        readonly PasswordRedirector redirector;
+        PasswordRedirector redirector;
+
+        /* The "first use" constructor. */
+        public winEmployeesRowManipulator() {
+            InitializeComponent();
+
+            this.cmbDepartment.Items.Add("Administrative");
+            this.cmbDepartment.SelectedIndex = 0;
+            this.cmbDepartment.IsEnabled = false;
+
+            this.cmbPosition.Items.Add("Director");
+            this.cmbPosition.SelectedIndex = 0;
+            this.cmbPosition.IsEnabled = false;
+
+            SetupRedirector();
+
+            this.Title = "First use";
+            this.btnDone.Margin = new Thickness(0, 7, 0, 7);
+            this.btnDone.Content = "Add";
+            this.btnDone.Width = 50;
+            this.action = Actions.Addition;
+
+            SetupWindow();
+        }
 
         public winEmployeesRowManipulator(RowManipulatorContainer container) {
             InitializeComponent();
@@ -32,10 +55,7 @@ namespace Ais.src
             UpdateDepartmentList();
             this.cmbDepartment.DropDownClosed += cmbDepartment_DropDownClosed;
 
-            /* A passwords redirection setup. */
-            this.redirector = new PasswordRedirector(this.txtPassw, this.txtPasswRepeat);
-            this.redirector.Bind(this.txtPassw);
-            this.redirector.Bind(this.txtPasswRepeat);
+            SetupRedirector();
 
             this.Title = "employee";
             this.btnDone.Margin = new Thickness(0, 7, 0, 7);
@@ -65,12 +85,13 @@ namespace Ais.src
                 this.btnDone.Width = 65;
             }
 
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.SizeToContent = SizeToContent.WidthAndHeight;
-            this.ResizeMode = ResizeMode.CanMinimize;
+            SetupWindow();
         }
 
-        void btnDone_Click(object sender, RoutedEventArgs _) {
+        void btnDone_Click(object sender, RoutedEventArgs e) {
+            this.txtPatronymic.Text = Utils.Denull(this.txtPatronymic.Text);
+            this.txtPhone.Text = Utils.Denull(this.txtPhone.Text);
+
             if (!Utils.CheckName(this.txtFirstName, "first name", true))
                 return;
 
@@ -138,17 +159,21 @@ namespace Ais.src
                 DataGridMergeVirtual();
             }
 
-            DataGridChanged();
-            this.btnSave.Visibility = Visibility.Visible;
+            if (!this.cmbDepartment.IsEnabled)
+                Context.TrySaveChanges();
+            else {
+                DataGridChanged();
+                this.btnSave.Visibility = Visibility.Visible;
+            }
 
             Close();
         }
 
-        private void cmbDepartment_DropDownClosed(object sender, EventArgs e) {
+        void cmbDepartment_DropDownClosed(object sender, EventArgs e) {
             UpdateDepartmentList();
         }
 
-        private void UpdateDepartmentList() {
+        void UpdateDepartmentList() {
             this.cmbPosition.Items.Clear();
 
             switch (this.cmbDepartment.Text) {
@@ -192,8 +217,20 @@ namespace Ais.src
 
                     break;
             }
-            
+
             this.cmbPosition.SelectedIndex = 0;
+        }
+
+        void SetupRedirector() {
+            this.redirector = new PasswordRedirector(this.txtPassw, this.txtPasswRepeat);
+            this.redirector.Bind(this.txtPassw);
+            this.redirector.Bind(this.txtPasswRepeat);
+        }
+
+        void SetupWindow() {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.SizeToContent = SizeToContent.WidthAndHeight;
+            this.ResizeMode = ResizeMode.CanMinimize;
         }
     }
 }

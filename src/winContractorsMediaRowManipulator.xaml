@@ -23,25 +23,25 @@
             <ColumnDefinition Width='7*' />
         </Grid.ColumnDefinitions>
 
-        <Label Content='First name: ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
+        <Label Content='First name* ' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Margin='10 5 10 0' />
         <TextBox Name='txtFirstName' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='0' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Last name: ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
+        <Label Content='Last name ' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Margin='10 5 10 0' />
         <TextBox Name='txtLastName' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='1' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Patronymic: ' FontSize='15' VerticalAlignment='Center' Grid.Row='2' Margin='10 5 10 0' />
+        <Label Content='Patronymic ' FontSize='15' VerticalAlignment='Center' Grid.Row='2' Margin='10 5 10 0' />
         <TextBox Name='txtPatronymic' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='2' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Email: ' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Margin='10 5 10 0' />
+        <Label Content='Email ' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Margin='10 5 10 0' />
         <TextBox Name='txtEmail' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='3' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Phone: ' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Margin='10 5 10 0' />
+        <Label Content='Phone ' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Margin='10 5 10 0' />
         <TextBox Name='txtPhone' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='4' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Price: ' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Margin='10 5 10 0' />
+        <Label Content='Price* ' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Margin='10 5 10 0' />
         <TextBox Name='txtPrice' TextAlignment='Center' FontSize='15' VerticalAlignment='Center' Grid.Row='5' Grid.Column='1' Margin='10 5 10 0' />
 
-        <Label Content='Lead: ' FontSize='15' VerticalAlignment='Center' Grid.Row='6' Margin='10 5 10 0' />
+        <Label Content='Lead* ' FontSize='15' VerticalAlignment='Center' Grid.Row='6' Margin='10 5 10 0' />
         <ComboBox Name='cmbLeads' FontSize='15' VerticalAlignment='Center' Grid.Row='6' Grid.Column='1' Margin='10 5 10 0' />
 
         <Button Name='btnDone' FontSize='15' Grid.Row='7' Grid.ColumnSpan='2' Click='btnDone_Click' />

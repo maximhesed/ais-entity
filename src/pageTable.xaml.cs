@@ -19,55 +19,135 @@ namespace Ais.src
         List<object> lstEntities;
         readonly List<object> lstAdded = new List<object>();
         readonly List<object> lstRemoved = new List<object>();
-        readonly string entityInstanceName;
+        string entityInstanceName;
         event DataGridMergeVirtualEventHandler DataGridMergeVirtual;
         event DataGridChangedEventHandler DataGridChanged;
         event DbChangedEventHandler DbChanged;
         RowManipulatorContainer container;
+        ConstraintContainer constraint;
+        List<RoutedEventHandler> events;
 
-        public pageTable(PageTableContainer container) {
-            InitializeComponent();
-
-            this.lstEntities = container.lstEntities;
+        void InitEntity<T>(PageTableContainer<T> container) where T : class, new() {
+            this.lstEntities = container.entity.ToList<object>();
             this.entityInstanceName = container.entityInstanceName;
             DataGridChanged = container.DataGridChanged;
             DbChanged = container.DbChanged;
 
-            if (this.entityInstanceName == EntityInstanceNames.Employee) {
-                GetColumnNames(new Employees());
-                Context.ctx.Employees.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.Lead) {
-                GetColumnNames(new Leads());
-                Context.ctx.Leads.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.Group) {
-                GetColumnNames(new Groups());
-                Context.ctx.Groups.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.OrdReq) {
-                GetColumnNames(new OrdReqs());
-                Context.ctx.OrdReqs.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia) {
-                GetColumnNames(new ContractorsMedia());
-                Context.ctx.ContractorsMedia.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorProduction) {
-                GetColumnNames(new ContractorsProduction());
-                Context.ctx.ContractorsProduction.Local.CollectionChanged += OnCollectionChanged;
-            }
-            else if (this.entityInstanceName == EntityInstanceNames.Stock) {
-                GetColumnNames(new Stock());
-                Context.ctx.Stock.Local.CollectionChanged += OnCollectionChanged;
-            }
+            /* Setup the context menu. */
+            this.events = new List<RoutedEventHandler> {
+                InfoMenuItem_Click,
+                CopyMenuItem_Click,
+                ModifyMenuItem_Click,
+                RemoveMenuItem_Click
+            };
+
+            this.dataGrid.ContextMenu = new ContextMenu();
+            ConstraintAccess(container.constraint);
+            this.constraint = container.constraint;
+
+            GetColumnNames(new T());
+            Context.ctx.Set<T>().Local.CollectionChanged += OnCollectionChanged;
+
+            if (this.entityInstanceName == EntityInstanceNames.Campaign)
+                /* It's not good. */
+                this.btnAdd.Visibility = Visibility.Collapsed;
 
             this.dataGrid.ItemsSource = this.lstEntities;
             this.dataGrid.IsReadOnly = true;
             this.cmbAttributes.SelectedIndex = 0;
 
             DataGridMergeVirtual += OnDataGridMergeVirtual;
-            Unloaded += OnUnloaded;
+            Unloaded += pageTable_Unloaded;
+        }
+
+        public pageTable(PageTableContainer<Employees> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<Leads> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<Groups> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<Campaigns> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<OrdReqs> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<ContractorsMedia> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<ContractorsProduction> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        public pageTable(PageTableContainer<Stock> container) {
+            InitializeComponent();
+
+            InitEntity(container);
+        }
+
+        void pageTable_Unloaded(object sender, RoutedEventArgs e) {
+            if (this.entityInstanceName == EntityInstanceNames.Employee)
+                Context.ctx.Employees.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.Lead)
+                Context.ctx.Leads.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.Group)
+                Context.ctx.Groups.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.Campaign)
+                Context.ctx.Campaigns.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.OrdReq)
+                Context.ctx.OrdReqs.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia)
+                Context.ctx.ContractorsMedia.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.ContractorProduction)
+                Context.ctx.ContractorsProduction.Local.Clear();
+            else if (this.entityInstanceName == EntityInstanceNames.Stock)
+                Context.ctx.Stock.Local.Clear();
+
+            foreach (DbEntityEntry entry in Context.ctx.ChangeTracker.Entries()) {
+                switch (entry.State) {
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+
+                        break;
+
+                    case EntityState.Modified:
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        entry.State = EntityState.Unchanged;
+
+                        break;
+                }
+            }
+
+            /* When the user navigates onto another page, the previous hanged
+             * events remains active. These previous events need to be taken off. */
+            for (int i = 0; i < 4; i++) {
+                if (this.constraint.flags[i])
+                    this.constraint.items[i].Click -= this.events[i];
+            }
         }
 
         void txtSearch_TextChanged(object sender, TextChangedEventArgs e) {
@@ -95,19 +175,19 @@ namespace Ais.src
                 new winEmployeesRowManipulator(this.container).Show();
             else if (this.entityInstanceName == EntityInstanceNames.Lead)
                 new winLeadsRowManipulator(this.container).Show();
-            else if (this.entityInstanceName == EntityInstanceNames.Group 
+            else if (this.entityInstanceName == EntityInstanceNames.Group
                     && Context.CheckGroupsDependencies())
                 new winGroupsRowManipulator(this.container).Show();
-            else if (this.entityInstanceName == EntityInstanceNames.OrdReq 
+            else if (this.entityInstanceName == EntityInstanceNames.OrdReq
                     && Context.CheckOrdReqsDependencies())
                 new winOrdReqsRowManipulator(this.container).Show();
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia 
+            else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia
                     && Context.CheckContractorsMediaDependencies())
                 new winContractorsMediaRowManipulator(this.container).Show();
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorProduction 
+            else if (this.entityInstanceName == EntityInstanceNames.ContractorProduction
                     && Context.CheckContractorsProductionDependencies())
                 new winContractorsProductionRowManipulator(this.container).Show();
-            else if (this.entityInstanceName == EntityInstanceNames.Stock 
+            else if (this.entityInstanceName == EntityInstanceNames.Stock
                     && Context.CheckStockDependencies())
                 new winStockRowManipulator(this.container).Show();
         }
@@ -126,7 +206,7 @@ namespace Ais.src
 
         void InfoMenuItem_Click(object sender, RoutedEventArgs _) {
             foreach (object item in this.dataGrid.SelectedItems) {
-                Dictionary<string, object> names = new Dictionary<string, object>();
+                Dictionary<string, object> names;
 
                 if (this.entityInstanceName == EntityInstanceNames.Employee) {
                     Employees e = item as Employees;
@@ -169,32 +249,42 @@ namespace Ais.src
 
                     names = new Dictionary<string, object>() {
                         {"Id", g.id},
-                        {"Producer", string.Format("[{0}] {1} {2} {3}",
+                        {"Producer", string.Format("({0}) {1} {2} {3}",
                             p.id,
                             p.name_last,
                             p.name_first,
                             Utils.Denull(p.patronymic))},
-                        {"Artist designer", string.Format("[{0}] {1} {2} {3}",
+                        {"Artist designer", string.Format("({0}) {1} {2} {3}",
                             ad.id,
                             ad.name_last,
                             ad.name_first,
                             Utils.Denull(ad.patronymic))},
-                        {"Graphics specialist", string.Format("[{0}] {1} {2} {3}",
+                        {"Graphics specialist", string.Format("({0}) {1} {2} {3}",
                             gs.id,
                             gs.name_last,
                             gs.name_first,
                             Utils.Denull(gs.patronymic))},
-                        {"Copywriter", string.Format("[{0}] {1} {2} {3}",
+                        {"Copywriter", string.Format("({0}) {1} {2} {3}",
                             c.id,
                             c.name_last,
                             c.name_first,
                             Utils.Denull(c.patronymic))},
-                        {"Lead", string.Format("[{0}] {1}{2} {3}",
+                        {"Lead", string.Format("({0}) {1}{2} {3}",
                             l.id,
                             Utils.Denull(l.name_last),
                             l.name_first,
                             Utils.Denull(l.patronymic))},
-                        {"Date of completion", g._comp_date}
+                        {"Date of completion", g.Campaigns._comp_date}
+                    };
+                }
+                else if (this.entityInstanceName == EntityInstanceNames.Campaign) {
+                    Campaigns c = item as Campaigns;
+
+                    names = new Dictionary<string, object>() {
+                        {"Id", c.gid},
+                        {"Completion date", c._comp_date},
+                        {"Starting budget", c.budget_starting},
+                        {"Contractors budget", c.budget_contractors}
                     };
                 }
                 else if (this.entityInstanceName == EntityInstanceNames.OrdReq) {
@@ -207,12 +297,12 @@ namespace Ais.src
                         {"Product name", r.prod_name},
                         {"Product quantity", r.prod_quantity},
                         {"Period date", r._period_date},
-                        {"Producer", string.Format("[{0}] {1} {2} {3}",
+                        {"Producer", string.Format("({0}) {1} {2} {3}",
                             p.id,
                             p.name_last,
                             p.name_first,
                             Utils.Denull(p.patronymic))},
-                        {"Lead", string.Format("[{0}] {1}{2} {3}",
+                        {"Lead", string.Format("({0}) {1}{2} {3}",
                             l.id,
                             Utils.Denull(l.name_last),
                             l.name_first,
@@ -232,7 +322,7 @@ namespace Ais.src
                         {"Email", cm.email},
                         {"Phone", cm.phone},
                         {"Price", cm.price},
-                        {"Lead", string.Format("[{0}] {1}{2} {3}",
+                        {"Lead", string.Format("({0}) {1}{2} {3}",
                             l.id,
                             Utils.Denull(l.name_last),
                             l.name_first,
@@ -257,12 +347,12 @@ namespace Ais.src
                         {"Product quantity", r.prod_quantity},
                         {"Price", cp.price},
                         {"Period date", r._period_date},
-                        {"Producer", string.Format("[{0}] {1} {2} {3}",
+                        {"Producer", string.Format("({0}) {1} {2} {3}",
                             p.id,
                             p.name_last,
                             p.name_first,
                             Utils.Denull(p.patronymic))},
-                        {"Lead", string.Format("[{0}] {1}{2} {3}",
+                        {"Lead", string.Format("({0}) {1}{2} {3}",
                             l.id,
                             Utils.Denull(l.name_last),
                             l.name_first,
@@ -280,18 +370,21 @@ namespace Ais.src
                         {"Product name", r.prod_name},
                         {"Product quantity", r.prod_quantity},
                         {"Period date", r._period_date},
-                        {"Producer", string.Format("[{0}] {1} {2} {3}",
+                        {"Producer", string.Format("({0}) {1} {2} {3}",
                             p.id,
                             p.name_last,
                             p.name_first,
                             Utils.Denull(p.patronymic))},
-                        {"Lead", string.Format("{0}{1} {2}",
+                        {"Lead", string.Format("({0}) {1}{2} {3}",
+                            l.id,
                             Utils.Denull(l.name_last),
                             l.name_first,
                             Utils.Denull(l.patronymic))},
                         {"Date of receiving", s._rec_date}
                     };
                 }
+                else
+                    return;
 
                 new winInfoTable(names, this.entityInstanceName).Show();
             }
@@ -308,7 +401,7 @@ namespace Ais.src
             Clipboard.SetDataObject(data);
         }
 
-        void ModifyMenuItem_Click(object sender, RoutedEventArgs e) {
+        void ModifyMenuItem_Click(object sender, RoutedEventArgs _) {
             this.container.action = Actions.Modification;
             this.container.DataGridMergeVirtual = DataGridMergeVirtual;
             this.container.DataGridChanged = DataGridChanged;
@@ -328,6 +421,11 @@ namespace Ais.src
                 this.container.itemSel = (Groups) this.dataGrid.SelectedItem;
 
                 new winGroupsRowManipulator(this.container).Show();
+            }
+            else if (this.entityInstanceName == EntityInstanceNames.Campaign) {
+                this.container.itemSel = (Campaigns) this.dataGrid.SelectedItem;
+
+                new winCampaignsRowManipulator(this.container).Show();
             }
             else if (this.entityInstanceName == EntityInstanceNames.OrdReq) {
                 this.container.itemSel = (OrdReqs) this.dataGrid.SelectedItem;
@@ -366,6 +464,8 @@ namespace Ais.src
                         Context.ctx.Leads.Remove((Leads) item);
                     else if (this.entityInstanceName == EntityInstanceNames.Group)
                         Context.ctx.Groups.Remove((Groups) item);
+                    else if (this.entityInstanceName == EntityInstanceNames.Campaign)
+                        Context.ctx.Campaigns.Remove((Campaigns) item);
                     else if (this.entityInstanceName == EntityInstanceNames.OrdReq)
                         Context.ctx.OrdReqs.Remove((OrdReqs) item);
                     else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia)
@@ -398,8 +498,8 @@ namespace Ais.src
             ReloadDataGrid();
         }
 
-        /* The context needs to be updated here. The added and removed 
-         * virtual records will be lost. Therefore, need to merge the 
+        /* The context needs to be updated here. The added and removed
+         * virtual records will be lost. Therefore, need to merge the
          * updated context with the buffered virtual records. */
         void OnDataGridMergeVirtual() {
             if (this.entityInstanceName == EntityInstanceNames.Employee)
@@ -408,6 +508,8 @@ namespace Ais.src
                 this.lstEntities = Context.ctx.Leads.ToList<object>();
             else if (this.entityInstanceName == EntityInstanceNames.Group)
                 this.lstEntities = Context.ctx.Groups.ToList<object>();
+            else if (this.entityInstanceName == EntityInstanceNames.Campaign)
+                this.lstEntities = Context.ctx.Campaigns.ToList<object>();
             else if (this.entityInstanceName == EntityInstanceNames.OrdReq)
                 this.lstEntities = Context.ctx.OrdReqs.ToList<object>();
             else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia)
@@ -439,7 +541,7 @@ namespace Ais.src
             string[] rowFields = Utils.RowToStr(entity, true, endBreak: false).Split('\t');
             List<string> ignFields = rowFields.Where(f => f[0] == '_').Select(
                 f => f.Substring(1)).ToList();
-            
+
             string DoubleScore(string str) {
                 string result = str;
 
@@ -450,7 +552,7 @@ namespace Ais.src
 
                 return result;
             }
-            
+
             for (int i = 0; i < rowFields.Length; i++) {
                 string header, f = header = rowFields[i];
                 DataGridTextColumn col = new DataGridTextColumn {
@@ -466,39 +568,17 @@ namespace Ais.src
             }
         }
 
-        void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (this.entityInstanceName == EntityInstanceNames.Employee)
-                Context.ctx.Employees.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.Lead)
-                Context.ctx.Leads.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.Group)
-                Context.ctx.Groups.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.OrdReq)
-                Context.ctx.OrdReqs.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorMedia)
-                Context.ctx.ContractorsMedia.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.ContractorProduction)
-                Context.ctx.ContractorsProduction.Local.Clear();
-            else if (this.entityInstanceName == EntityInstanceNames.Stock)
-                Context.ctx.Stock.Local.Clear();
+        void ConstraintAccess(ConstraintContainer c) {
+            for (int i = 0; i < 4; i++) {
+                if (c.flags[i]) {
+                    c.items[i].Click += this.events[i];
 
-            foreach (DbEntityEntry entry in Context.ctx.ChangeTracker.Entries()) {
-                switch (entry.State) {
-                    case EntityState.Added:
-                        entry.State = EntityState.Detached;
-
-                        break;
-
-                    case EntityState.Modified:
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.State = EntityState.Unchanged;
-
-                        break;
+                    this.dataGrid.ContextMenu.Items.Add(c.items[i]);
                 }
             }
 
-            this.btnSave.Visibility = Visibility.Collapsed;
+            if (!c.canAdd)
+                this.btnAdd.Visibility = Visibility.Collapsed;
         }
     }
 }

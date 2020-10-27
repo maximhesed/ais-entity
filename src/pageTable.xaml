@@ -29,14 +29,14 @@
         </WrapPanel>
 
         <DataGrid Name='dataGrid' Grid.Row='1' AutoGenerateColumns='false' ColumnWidth='*' Grid.ColumnSpan='2'>
-            <DataGrid.ContextMenu>
+            <!--<DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name='Info' Header='Show info' Click='InfoMenuItem_Click' />
                     <MenuItem Name='CopyRow' Header='Copy' Click='CopyMenuItem_Click' />
                     <MenuItem Name='Modify' Header='Modify' Click='ModifyMenuItem_Click' />
                     <MenuItem Name='Remove' Header='Remove' Click='RemoveMenuItem_Click' />
                 </ContextMenu>
-            </DataGrid.ContextMenu>
+            </DataGrid.ContextMenu>-->
 
             <DataGrid.Resources>
                 <SolidColorBrush x:Key='{x:Static SystemColors.HighlightBrushKey}' Color='#ccc' />

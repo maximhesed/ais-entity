@@ -23,7 +23,7 @@ namespace Ais.src
             this.btnSave = container.btnSave;
 
             foreach (OrdReqs r in Context.ctx.OrdReqs)
-                this.cmbOrdReqs.Items.Add(string.Format("[{0}] {1} {2} {3}",
+                this.cmbOrdReqs.Items.Add(string.Format("({0}) {1} {2} {3}",
                     r.id, r.prod_name, r.prod_quantity, r.period_date));
 
             this.cmbOrdReqs.SelectedIndex = 0;
@@ -57,6 +57,11 @@ namespace Ais.src
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
+            this.txtLastName.Text = Utils.Denull(this.txtLastName.Text);
+            this.txtPatronymic.Text = Utils.Denull(this.txtPatronymic.Text);
+            this.txtEmail.Text = Utils.Denull(this.txtEmail.Text);
+            this.txtPhone.Text = Utils.Denull(this.txtPhone.Text);
+
             if (!Utils.CheckName(this.txtFirstName, "first name", true))
                 return;
 

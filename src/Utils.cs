@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +10,8 @@ using System.Windows.Controls;
 
 namespace Ais.src
 {
-    static class Utils {
+    static class Utils
+    {
         internal static string Hash(string passw) {
             byte[] hashBytes = new byte[36];
             byte[] salt = new byte[16];
@@ -51,13 +50,13 @@ namespace Ais.src
 
         /* It is used for the non-required fields. If a such field is empty 
          * and it has passed to the saving procedure, then this field willn't 
-         * be null, but an empty string, in the database. */
+         * be a null, but an empty string, in the database. */
         internal static string Null(string str) {
             return string.IsNullOrWhiteSpace(str) ? "null" : str;
         }
 
         internal static string Denull(string str) {
-            if (str == null || str == "" || str == "null")
+            if (new List<object> { null, "", "null" }.Contains(str.ToLower()))
                 return "";
 
             return str + " ";
@@ -66,8 +65,7 @@ namespace Ais.src
         static List<PropertyInfo> ProjectLowerOnly(object entity, bool intOverlap = false) {
             List<PropertyInfo> props = entity.GetType().GetProperties().Where(
                 f => (char.IsLower(f.Name[0]) || f.Name[0] == '_')
-                    /* Workaround. */
-                    && f.Name != "password_hash").ToList();
+                    && f.Name != "id" && f.Name != "password_hash").ToList();
 
             if (intOverlap) {
                 List<string> intFields = props.Select(p => p.Name).Where(
@@ -123,6 +121,8 @@ namespace Ais.src
         internal static bool CheckNumeric(TextBox box, string fieldName, long? min = null,
                 long? max = null, bool isReq = false) {
             if (!string.IsNullOrEmpty(box.Text)) {
+                box.Text = box.Text.Trim();
+
                 if (!box.Text.All(char.IsDigit)) {
                     MessageBox.Show($"The {fieldName} must contain only numbers.", "",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -170,6 +170,8 @@ namespace Ais.src
 
         internal static bool CheckName(TextBox box, string fieldName = null, bool isReq = false) {
             if (!string.IsNullOrEmpty(box.Text)) {
+                box.Text = box.Text.Trim();
+
                 if (!box.Text.ToLower().All(c => c >= 'а' && c <= 'я')
                         && !box.Text.ToLower().All(c => c >= 'a' && c <= 'z')) {
                     MessageBox.Show($"The {fieldName} must contain only Russian or only English letters.",
@@ -198,6 +200,8 @@ namespace Ais.src
 
         internal static bool CheckEmail(TextBox box) {
             if (!string.IsNullOrEmpty(box.Text)) {
+                box.Text = box.Text.Trim().ToLower();
+
                 if (!CheckEmailRegex(box.Text)) {
                     MessageBox.Show("The e-mail format is invalid.", "", MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -228,17 +232,17 @@ namespace Ais.src
 
         internal static bool CheckEmailOrPhone(TextBox txtEmail, TextBox txtPhone) {
             if (string.IsNullOrEmpty(txtEmail.Text) && string.IsNullOrEmpty(txtPhone.Text)) {
-                if (!CheckEmailRegex(txtEmail.Text)) {
-                    MessageBox.Show("Enter e-mail or phone.", "", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                MessageBox.Show("Enter e-mail or phone.", "", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
-                    txtEmail.Focus();
+                txtEmail.Focus();
 
-                    return false;
-                }
+                return false;
             }
 
             if (!string.IsNullOrEmpty(txtEmail.Text)) {
+                txtEmail.Text = txtEmail.Text.Trim().ToLower();
+
                 if (!CheckEmailRegex(txtEmail.Text)) {
                     MessageBox.Show("The e-mail format is invalid.", "", MessageBoxButton.OK,
                         MessageBoxImage.Information);

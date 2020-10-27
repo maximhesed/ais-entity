@@ -54,6 +54,11 @@ namespace Ais.src
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
+            this.txtLastName.Text = Utils.Denull(this.txtLastName.Text);
+            this.txtPatronymic.Text = Utils.Denull(this.txtPatronymic.Text);
+            this.txtEmail.Text = Utils.Denull(this.txtEmail.Text);
+            this.txtPhone.Text = Utils.Denull(this.txtPhone.Text);
+
             if (!Utils.CheckName(this.txtFirstName, "first name", true))
                 return;
 

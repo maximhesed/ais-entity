@@ -3,7 +3,19 @@
     public partial class Employees
     {
         public string _reg_date {
-            get => reg_date.Date.ToShortDateString();
+            get => this.reg_date.Date.ToShortDateString();
+            private set {
+            }
+        }
+
+        public string department {
+            get => this.Positions.department;
+            private set {
+            }
+        }
+
+        public string position {
+            get => this.Positions.position;
             private set {
             }
         }
@@ -12,16 +24,22 @@
     public partial class Leads
     {
         public string _appeal_date {
-            get => appeal_date.Date.ToShortDateString();
+            get => this.appeal_date.Date.ToShortDateString();
             private set {
             }
         }
     }
 
-    public partial class Groups
+    public partial class Campaigns
     {
         public string _comp_date {
-            get => comp_date.Date.ToShortDateString();
+            get => this.comp_date.Date.ToShortDateString();
+            private set {
+            }
+        }
+
+        public string _status {
+            get => this.status ? "finished" : "in progress";
             private set {
             }
         }
@@ -30,7 +48,7 @@
     public partial class OrdReqs
     {
         public string _period_date {
-            get => period_date.Date.ToShortDateString();
+            get => this.period_date.Date.ToShortDateString();
             private set {
             }
         }
@@ -39,7 +57,7 @@
     public partial class Stock
     {
         public string _rec_date {
-            get => rec_date.Date.ToShortDateString();
+            get => this.rec_date.Date.ToShortDateString();
             private set {
             }
         }

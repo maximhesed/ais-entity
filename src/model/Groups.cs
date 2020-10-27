@@ -19,9 +19,9 @@ namespace Ais.src.model
         public byte adid { get; set; }
         public byte gsid { get; set; }
         public byte cid { get; set; }
-        public System.DateTime comp_date { get; set; }
         public Nullable<int> lid { get; set; }
     
+        public virtual Campaigns Campaigns { get; set; }
         public virtual Leads Leads { get; set; }
     }
 }
