@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -66,11 +67,24 @@ namespace Ais.src
 
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.CanMinimize;
+            this.UseLayoutRounding = true;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
+            byte pid = byte.Parse(this.cmbProducers.Text[1] + "");
+            byte lid = byte.Parse(this.cmbLeads.Text[1] + "");
+
             if (!Utils.CheckNumeric(this.txtProdQuantity, "product quantity", 1, isReq: true))
                 return;
+
+            if (Context.ctx.Groups.Where(g => g.pid == pid && g.lid == lid).Count() == 0) {
+                MessageBox.Show("This lead isn't in the same group as a producer.",
+                    "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                this.cmbLeads.Focus();
+
+                return;
+            }
 
             if (this.action == Actions.Addition) {
                 try {
@@ -78,8 +92,8 @@ namespace Ais.src
                         prod_name = this.txtProdName.Text,
                         prod_quantity = int.Parse(this.txtProdQuantity.Text),
                         period_date = DateTime.Parse(this.dtpPeriodDate.Text),
-                        pid = byte.Parse(this.cmbProducers.Text[1] + ""),
-                        lid = byte.Parse(this.cmbLeads.Text[1] + "")
+                        pid = pid,
+                        lid = lid
                     });
                 } catch (Exception ex) {
                     MessageBox.Show(ex.Message, "Save the changes", MessageBoxButton.OK,
@@ -92,8 +106,8 @@ namespace Ais.src
                 this.r.prod_name = this.txtProdName.Text;
                 this.r.prod_quantity = int.Parse(this.txtProdQuantity.Text);
                 this.r.period_date = DateTime.Parse(this.dtpPeriodDate.Text);
-                this.r.pid = byte.Parse(this.cmbProducers.Text[1] + "");
-                this.r.lid = byte.Parse(this.cmbLeads.Text[1] + "");
+                this.r.pid = pid;
+                this.r.lid = lid;
 
                 DataGridMergeVirtual();
             }

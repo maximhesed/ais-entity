@@ -203,7 +203,7 @@ namespace Ais.src
                 box.Text = box.Text.Trim().ToLower();
 
                 if (!CheckEmailRegex(box.Text)) {
-                    MessageBox.Show("The e-mail format is invalid.", "", MessageBoxButton.OK,
+                    MessageBox.Show("The email format is invalid.", "", MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
                     box.Focus();
@@ -212,7 +212,7 @@ namespace Ais.src
                 }
             }
             else {
-                MessageBox.Show("Enter e-mail.", "", MessageBoxButton.OK,
+                MessageBox.Show("Enter email.", "", MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
                 box.Focus();
@@ -224,15 +224,12 @@ namespace Ais.src
         }
 
         internal static bool CheckPhone(TextBox box) {
-            if (!CheckNumeric(box, "phone"))
-                return false;
-
-            return true;
+            return CheckNumeric(box, "phone");
         }
 
         internal static bool CheckEmailOrPhone(TextBox txtEmail, TextBox txtPhone) {
             if (string.IsNullOrEmpty(txtEmail.Text) && string.IsNullOrEmpty(txtPhone.Text)) {
-                MessageBox.Show("Enter e-mail or phone.", "", MessageBoxButton.OK,
+                MessageBox.Show("Enter email or phone.", "", MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
                 txtEmail.Focus();
@@ -244,7 +241,7 @@ namespace Ais.src
                 txtEmail.Text = txtEmail.Text.Trim().ToLower();
 
                 if (!CheckEmailRegex(txtEmail.Text)) {
-                    MessageBox.Show("The e-mail format is invalid.", "", MessageBoxButton.OK,
+                    MessageBox.Show("The email format is invalid.", "", MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
                     txtEmail.Focus();

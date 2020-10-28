@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Ais.src.model;
@@ -88,7 +89,7 @@ namespace Ais.src
             SetupWindow();
         }
 
-        void btnDone_Click(object sender, RoutedEventArgs e) {
+        void btnDone_Click(object sender, RoutedEventArgs _) {
             this.txtPatronymic.Text = Utils.Denull(this.txtPatronymic.Text);
             this.txtPhone.Text = Utils.Denull(this.txtPhone.Text);
 
@@ -104,30 +105,25 @@ namespace Ais.src
             if (!Utils.CheckEmail(this.txtEmail))
                 return;
 
+            if (this.action == Actions.Addition) {
+                if (!Context.CheckDublicateEmail(new Employees(), this.txtEmail,
+                        "An employee"))
+                    return;
+            }
+
             if (!Utils.CheckPhone(this.txtPhone))
                 return;
+
+            if (this.action == Actions.Addition) {
+                if (!Context.CheckDublicatePhone(new Employees(), this.txtPhone,
+                        "An employee"))
+                    return;
+            }
 
             this.txtPatronymic.Text = Utils.Null(this.txtPatronymic.Text);
             this.txtPhone.Text = Utils.Null(this.txtPhone.Text);
 
             if (this.action == Actions.Addition) {
-                if (this.redirector.Passw.Length < 6) {
-                    MessageBox.Show("The password length must be greater than 6.", "",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    this.txtPassw.Focus();
-
-                    return;
-                }
-                else if (this.redirector.Passw != this.redirector.PasswRepeat) {
-                    MessageBox.Show("The passwords don't match.", "", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-
-                    this.txtPassw.Focus();
-
-                    return;
-                }
-
                 try {
                     Context.ctx.Employees.Add(new Employees {
                         name_first = this.txtFirstName.Text,
@@ -231,6 +227,7 @@ namespace Ais.src
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.SizeToContent = SizeToContent.WidthAndHeight;
             this.ResizeMode = ResizeMode.CanMinimize;
+            this.UseLayoutRounding = true;
         }
     }
 }

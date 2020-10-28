@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Ais.src.model;
@@ -54,6 +55,7 @@ namespace Ais.src
 
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.CanMinimize;
+            this.UseLayoutRounding = true;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
@@ -73,6 +75,12 @@ namespace Ais.src
 
             if (!Utils.CheckEmailOrPhone(this.txtEmail, this.txtPhone))
                 return;
+
+            if (this.action == Actions.Addition) {
+                if (!Context.CheckDublicateEmailOrPhone(new ContractorsProduction(),
+                        this.txtEmail, this.txtPhone, "A production contractor"))
+                    return;
+            }
 
             if (!Utils.CheckPrice(this.txtPrice))
                 return;

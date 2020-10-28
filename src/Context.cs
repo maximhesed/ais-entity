@@ -2,6 +2,7 @@
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Ais.src.model;
 
 namespace Ais.src
@@ -69,17 +70,14 @@ namespace Ais.src
             try {
                 ctx.SaveChanges();
             } catch (DbEntityValidationException ex) {
-                string entityInstanceName = "";
                 string entityErrStr = "";
                 string dbErrStr = "";
 
                 foreach (DbEntityValidationResult r in ex.EntityValidationErrors) {
-                    entityInstanceName = r.Entry.Entity.GetType().Name;
-
                     foreach (DbValidationError e in r.ValidationErrors)
                         entityErrStr += string.Format("   - {0}: \"{1}\"\n", e.PropertyName, e.ErrorMessage);
 
-                    dbErrStr += string.Format("- {0}:\n{1}\n", entityInstanceName, entityErrStr);
+                    dbErrStr += string.Format("- {0}:\n{1}\n", r.Entry.Entity.GetType().Name, entityErrStr);
                 }
 
                 MessageBox.Show(string.Format("Tne next entities has the invalid properties:\n\n{0}",
@@ -98,6 +96,43 @@ namespace Ais.src
 
         static void ShowInsufficientDataMsg() {
             MessageBox.Show("An insufficient data for the addition.", "Addition");
+        }
+
+        internal static bool CheckDublicateEmail<T>(T _, TextBox txtEmail, string fieldName)
+                where T : class, IEntityIntersector {
+            if (ctx.Set<T>().Where(l => l.email == txtEmail.Text).Count() > 0) {
+                MessageBox.Show($"{fieldName} with such an email already exists.");
+
+                txtEmail.Focus();
+
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static bool CheckDublicatePhone<T>(T _, TextBox txtPhone, string fieldName)
+                where T : class, IEntityIntersector {
+            if (ctx.Set<T>().Where(l => l.phone == txtPhone.Text).Count() > 0) {
+                MessageBox.Show($"{fieldName} with such a phone already exists.");
+
+                txtPhone.Focus();
+
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static bool CheckDublicateEmailOrPhone<T>(T _, TextBox txtEmail,
+                TextBox txtPhone, string fieldName) where T : class, IEntityIntersector {
+            if (!CheckDublicateEmail(_, txtEmail, fieldName))
+                return false;
+
+            if (!CheckDublicatePhone(_, txtPhone, fieldName))
+                return false;
+
+            return true;
         }
     }
 }

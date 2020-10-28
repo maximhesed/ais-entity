@@ -86,6 +86,7 @@ namespace Ais.src
 
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.CanMinimize;
+            this.UseLayoutRounding = true;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {

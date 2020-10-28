@@ -58,6 +58,7 @@ namespace Ais.src
 
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.CanMinimize;
+            this.UseLayoutRounding = true;
         }
 
         void btnDone_Click(object sender, RoutedEventArgs e) {
@@ -80,12 +81,18 @@ namespace Ais.src
             if (!Utils.CheckEmailOrPhone(this.txtEmail, this.txtPhone))
                 return;
 
+            if (this.action == Actions.Addition) {
+                if (!Context.CheckDublicateEmailOrPhone(new ContractorsMedia(),
+                        this.txtEmail, this.txtPhone, "A media contractor"))
+                    return;
+            }
+
             if (!Utils.CheckPrice(this.txtPrice))
                 return;
 
             lid = int.Parse(this.cmbLeads.Text[1] + "");
             if (Context.ctx.Groups.Where(g => g.lid == lid).Count() == 0) {
-                MessageBox.Show("This lead isn't participates in a campaign.", "",
+                MessageBox.Show("This lead isn't in the any campaign.", "",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
                 this.cmbLeads.Focus();
